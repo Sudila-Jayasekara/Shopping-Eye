@@ -13,7 +13,7 @@ import Footer from './components/footer';
 
 function App() {
 
-  // Check if user is authenticated and admin
+  // Check if user is authenticated and adminsdfsd
   const isAuthenticated = UserService.isAuthenticated();
   const isAdmin = UserService.adminOnly();
 
