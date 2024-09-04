@@ -1,14 +1,27 @@
-import { useState } from 'react'
-
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import ItemForm from './itemForm';
+import Inventory from './Inventory';
+import Header from './Header';
+import Footer from './Footer';
 
 function App() {
+    return (
+      
+        <Router>
 
+            <div className="App">
+            <Header/>
+                <Routes>
+                    {/* Route for the form */}
+                    <Route path="/create-item" element={<ItemForm />} />
 
-  return (
-    <h1 className="text-3xl font-bold underline text-red-500">
-      Hello world!
-    </h1>
-  )
+                    {/* Route for the inventory */}
+                    <Route path="/inventory" element={<Inventory />} />
+                </Routes>
+                <Footer/>
+            </div>
+        </Router>
+    );
 }
 
-export default App
+export default App;
