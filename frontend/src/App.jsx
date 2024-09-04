@@ -6,6 +6,8 @@ import UserService from './components/user_management/UsersService';
 import UpdateUser from './components/user_management/UpdateUser';
 import UserManagementPage from './components/user_management/UserManagementPage';
 import ProfilePage from './components/user_management/ProfilePage';
+import PaymentForm from './components/PaymentForm'
+import AdminPaymentView from './components/AdminPaymentView';
 import Header from './components/header';
 import Footer from './components/footer';
 
@@ -34,7 +36,8 @@ function App() {
                 <Route path="/update-user/:userId" element={<UpdateUser />} />
               </>
             )}
-
+             <Route path="/payment" element={<PaymentForm />} />
+             <Route path="/admin/payments" element={<AdminPaymentView />} />
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         </div>
