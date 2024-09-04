@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getAllItems, deleteItem, updateItem } from './api'; // Adjust import based on your actual API file
+import { getAllItems, deleteItem, updateItem } from './api'; 
 
 const HomeShopping = () => {
     const [items, setItems] = useState([]);
