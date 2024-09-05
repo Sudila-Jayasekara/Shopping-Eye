@@ -1,50 +1,57 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from './components/user_management/LoginPage';
 import RegistrationPage from './components/user_management/RegistrationPage';
 import UserService from './components/user_management/UsersService';
 import UpdateUser from './components/user_management/UpdateUser';
 import UserManagementPage from './components/user_management/UserManagementPage';
 import ProfilePage from './components/user_management/ProfilePage';
-import PaymentForm from './components/order_process_management/PaymentForm'
+import PaymentForm from './components/order_process_management/PaymentForm';
 import AdminPaymentView from './components/order_process_management/AdminPaymentView';
-import Header from './components/header';
-import Footer from './components/footer';
+import ItemForm from './components/inventory_management/itemForm';
+import Inventory from './components/inventory_management/Inventory';
+import HomeShopping from './components/inventory_management/HomeSopping';
+import Header from './Header';
+import Footer from './footer';
 
 function App() {
-
-  // Check if user is authenticated and adminsdfsd
+  // Check if user is authenticated and admin
   const isAuthenticated = UserService.isAuthenticated();
-  const isAdmin = UserService.adminOnly();
+  const isAdmin = UserService.isAdmin();
 
   return (
-    <BrowserRouter>
+    <Router>
       <div className="App flex flex-col min-h-screen">
         <Header />
 
         <div className="flex-grow">
           <Routes>
-            <Route path="/" element={<LoginPage />} />
+            <Route path="/" element={<HomeShopping />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/profile" element={isAuthenticated ? <ProfilePage /> : <Navigate to="/login" />} />
-
+            
             {/* Render admin-only routes if user is authenticated and is admin */}
             {isAuthenticated && isAdmin && (
               <>
                 <Route path="/register" element={<RegistrationPage />} />
                 <Route path="/update-user/:userId" element={<UpdateUser />} />
                 <Route path="/admin/user-management" element={<UserManagementPage />} />
+                <Route path="/admin/payments" element={<AdminPaymentView />} />
               </>
             )}
-             <Route path="/payment" element={<PaymentForm />} />
-             <Route path="/admin/payments" element={<AdminPaymentView />} />
+            
+            <Route path="/payment" element={<PaymentForm />} />
+            <Route path="/create-item" element={<ItemForm />} />
+            <Route path="/inventory" element={<Inventory />} />
+            
+            {/* Redirect all other routes to login */}
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         </div>
 
         <Footer />
       </div>
-    </BrowserRouter>
+    </Router>
   );
 }
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createPayment } from './paymentService';
+import { createPayment } from './PaymentService';
 
 const PaymentForm = () => {
     const [paymentMethod, setPaymentMethod] = useState('');
