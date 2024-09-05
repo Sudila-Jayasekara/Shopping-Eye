@@ -6,8 +6,8 @@ import UserService from './components/user_management/UsersService';
 import UpdateUser from './components/user_management/UpdateUser';
 import UserManagementPage from './components/user_management/UserManagementPage';
 import ProfilePage from './components/user_management/ProfilePage';
-import PaymentForm from './components/PaymentForm'
-import AdminPaymentView from './components/AdminPaymentView';
+import PaymentForm from './components/order_process_management/PaymentForm'
+import AdminPaymentView from './components/order_process_management/AdminPaymentView';
 import Header from './components/header';
 import Footer from './components/footer';
 

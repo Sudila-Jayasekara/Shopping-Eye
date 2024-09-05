@@ -10,7 +10,7 @@ const AdminPaymentView = () => {
 
     const fetchPayments = async () => {
         try {
-            const response = await axios.get('http://localhost:1010/api/payments');
+            const response = await axios.get('http://localhost:1010/public/payments');
             setPayments(response.data);
         } catch (error) {
             console.error("Error fetching payments:", error);
@@ -19,7 +19,7 @@ const AdminPaymentView = () => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:1010/api/payments/${id}`);
+            await axios.delete(`http://localhost:1010/public/payments/${id}`);
             setPayments(payments.filter(payment => payment.id !== id));
         } catch (error) {
             console.error("Error deleting payment:", error);
