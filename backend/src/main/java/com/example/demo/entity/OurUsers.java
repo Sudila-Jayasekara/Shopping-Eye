@@ -16,12 +16,16 @@ import java.util.List;
 public class OurUsers implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String email;
     private String name;
     private String password;
     private String city;
     private String role;
+
+    @OneToOne(cascade = CascadeType.ALL) // Cascade to automatically persist the wishlist
+    @JoinColumn(name = "wishlist_id", referencedColumnName = "id")
+    private Wishlist wishlist;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

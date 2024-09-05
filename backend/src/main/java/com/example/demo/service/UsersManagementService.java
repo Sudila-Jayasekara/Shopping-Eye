@@ -2,7 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.dto.ReqRes;
 import com.example.demo.entity.OurUsers;
+import com.example.demo.entity.Wishlist;
 import com.example.demo.repository.UsersRepo;
+import com.example.demo.repository.WishlistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +29,9 @@ public class UsersManagementService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private WishlistRepository wishlistRepository;
+
     public ReqRes register(ReqRes registrationRequest){
         ReqRes resp = new ReqRes();
 
@@ -39,6 +44,12 @@ public class UsersManagementService {
             ourUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
             OurUsers ourUsersResult = usersRepo.save(ourUser);
             if (ourUsersResult.getId()>0) {
+                Wishlist wishlist = new Wishlist();
+                wishlist.setName(ourUsersResult.getName() + "'s Wishlist");
+                wishlist.setUser(ourUsersResult);  // Assuming there is a field 'user' in Wishlist entity
+                Wishlist savedWishlist = wishlistRepository.save(wishlist);
+
+                ourUsersResult.setWishlist(savedWishlist);
                 resp.setOurUsers((ourUsersResult));
                 resp.setMessage("User Saved Successfully");
                 resp.setStatusCode(200);
@@ -125,7 +136,7 @@ public class UsersManagementService {
     }
 
 
-    public ReqRes getUsersById(Integer id) {
+    public ReqRes getUsersById(Long id) {
         ReqRes reqRes = new ReqRes();
         try {
             OurUsers usersById = usersRepo.findById(id).orElseThrow(() -> new RuntimeException("User Not found"));
@@ -140,7 +151,7 @@ public class UsersManagementService {
     }
 
 
-    public ReqRes deleteUser(Integer userId) {
+    public ReqRes deleteUser(Long userId) {
         ReqRes reqRes = new ReqRes();
         try {
             Optional<OurUsers> userOptional = usersRepo.findById(userId);
@@ -159,7 +170,7 @@ public class UsersManagementService {
         return reqRes;
     }
 
-    public ReqRes updateUser(Integer userId, OurUsers updatedUser) {
+    public ReqRes updateUser(Long userId, OurUsers updatedUser) {
         ReqRes reqRes = new ReqRes();
         try {
             Optional<OurUsers> userOptional = usersRepo.findById(userId);

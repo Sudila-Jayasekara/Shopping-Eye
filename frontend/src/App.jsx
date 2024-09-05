@@ -32,8 +32,8 @@ function App() {
             {isAuthenticated && isAdmin && (
               <>
                 <Route path="/register" element={<RegistrationPage />} />
-                <Route path="/admin/user-management" element={<UserManagementPage />} />
                 <Route path="/update-user/:userId" element={<UpdateUser />} />
+                <Route path="/admin/user-management" element={<UserManagementPage />} />
               </>
             )}
              <Route path="/payment" element={<PaymentForm />} />
