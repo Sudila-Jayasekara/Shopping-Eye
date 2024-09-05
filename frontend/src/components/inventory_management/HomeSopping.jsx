@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getAllItems, deleteItem, updateItem } from './api'; 
+import { getAllItems, deleteItem, updateItem } from './InventoryService'; 
 
 const HomeShopping = () => {
     const [items, setItems] = useState([]);

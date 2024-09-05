@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getAllItems, deleteItem, updateItem } from './api'; // Ensure these API methods are correctly implemented
+import { getAllItems, deleteItem, updateItem } from './InventoryService'; // Ensure these API methods are correctly implemented
 
 const Inventory = () => {
     const [items, setItems] = useState([]);

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:1010/api/items';
+const API_URL = 'http://localhost:1010/public/items';
 
 export const createItem = async (itemData) => {
     try {

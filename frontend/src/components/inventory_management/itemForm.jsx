@@ -1,6 +1,6 @@
 //itemForm.jsx
 import { useState } from 'react';
-import { createItem } from './api'; // Ensure this path is correct
+import { createItem } from './InventoryService'; // Ensure this path is correct
 
 const ItemForm = () => {
     const [name, setName] = useState('');
