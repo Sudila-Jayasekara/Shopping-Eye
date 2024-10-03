@@ -11,9 +11,9 @@ import AdminPaymentView from './components/order_process_management/AdminPayment
 
 import ItemForm from './components/inventory_management/itemForm';
 import Inventory from './components/inventory_management/Inventory';
-import HomeShopping from './components/inventory_management/HomeSopping';
-import ItemDetails from './ItemDetails';
-import { QuantityProvider } from './QuantityContext';
+import HomeShopping from './components/inventory_management/HomeShopping';
+import ItemDetails from './components/inventory_management/ItemDetails';
+import { QuantityProvider } from './components/inventory_management/QuantityContext';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import Header from './Header';

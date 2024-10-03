@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react'; // Added useContext import
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
-import { getAllItems } from './api'; // Assuming this is your API call for fetching items
+import { getAllItems } from './InventoryService'; // Assuming this is your API call for fetching items
 import { QuantityContext } from './QuantityContext'; // Import QuantityContext
 
 const images = [

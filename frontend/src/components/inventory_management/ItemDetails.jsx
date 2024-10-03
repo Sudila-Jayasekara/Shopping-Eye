@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { getAllItems } from './api';
+import { getAllItems } from './InventoryService';
 import { QuantityContext } from './QuantityContext'; // Import the context
 
 const ItemDetails = () => {
