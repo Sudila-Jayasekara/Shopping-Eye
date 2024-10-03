@@ -8,9 +8,14 @@ import UserManagementPage from './components/user_management/UserManagementPage'
 import ProfilePage from './components/user_management/ProfilePage';
 import PaymentForm from './components/order_process_management/PaymentForm';
 import AdminPaymentView from './components/order_process_management/AdminPaymentView';
+
 import ItemForm from './components/inventory_management/itemForm';
 import Inventory from './components/inventory_management/Inventory';
 import HomeShopping from './components/inventory_management/HomeSopping';
+import ItemDetails from './ItemDetails';
+import { QuantityProvider } from './QuantityContext';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 import Header from './Header';
 import Footer from './footer';
 
@@ -41,8 +46,11 @@ function App() {
             )}
             
             <Route path="/payment" element={<PaymentForm />} />
+
             <Route path="/create-item" element={<ItemForm />} />
             <Route path="/inventory" element={<Inventory />} />
+            <Route path="/home" element={<HomeShopping/>} />
+            <Route path="/item/:id" element={<ItemDetails />} />
             
             {/* Redirect all other routes to login */}
             <Route path="*" element={<Navigate to="/login" />} />

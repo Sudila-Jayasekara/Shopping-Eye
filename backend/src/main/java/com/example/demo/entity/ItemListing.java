@@ -24,16 +24,20 @@ public class ItemListing implements Serializable {
 
     private String category;
 
+    @Column(name = "image_url")
+    private String imageUrl; // New field for image URL
+
     // Default constructor
     public ItemListing() {}
 
     // Parameterized constructor
-    public ItemListing(String name, Double price, Integer quantity, String description, String category) {
+    public ItemListing(String name, Double price, Integer quantity, String description, String category, String imageUrl) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
         this.description = description;
         this.category = category;
+        this.imageUrl = imageUrl;
     }
 
     // Getters and Setters
@@ -83,5 +87,13 @@ public class ItemListing implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

@@ -1,4 +1,3 @@
-//itemForm.jsx
 import { useState } from 'react';
 import { createItem } from './InventoryService'; // Ensure this path is correct
 
@@ -8,46 +7,90 @@ const ItemForm = () => {
     const [quantity, setQuantity] = useState('');
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('');
-    const [successMessage, setSuccessMessage] = useState(''); // New state for success message
+    const [image, setImage] = useState(null); // New state for image
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState(''); // State for error message
 
-    const categories = ['Food', 'Electronics', 'Clothing', 'Home Appliances', 'Books', 'Furniture']; // Define your categories here
+    const categories = ['Food', 'Electronics', 'Clothing', 'Home Appliances', 'Books', 'Furniture'];
+
+    const handleChange = (e) => {
+        const { name, value, files } = e.target;
+        if (name === 'image') {
+            setImage(files[0]); // Handle file input
+        } else {
+            switch (name) {
+                case 'name':
+                    setName(value);
+                    break;
+                case 'price':
+                    setPrice(value);
+                    break;
+                case 'quantity':
+                    setQuantity(value);
+                    break;
+                case 'description':
+                    setDescription(value);
+                    break;
+                case 'category':
+                    setCategory(value);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const itemData = {
-            name,
-            price: parseFloat(price),
-            quantity: parseInt(quantity),
-            description,
-            category
-        };
+
         try {
-            const response = await createItem(itemData);
+            let imageUrl = '';
+            if (image) {
+                imageUrl = await uploadImage(image); // Upload image and get URL
+            }
+
+            const itemData = {
+                name,
+                price,
+                quantity,
+                description,
+                category,
+                imageUrl // Include image URL if uploaded
+            };
+
+            const response = await createItem(itemData); // Send item data to API
             console.log("Item listing created successfully:", response);
 
-            // Show success message
             setSuccessMessage("Item listing created successfully!");
+            setErrorMessage(''); // Clear any previous errors
 
-            // Clear the form
+            // Clear form fields
             setName('');
             setPrice('');
             setQuantity('');
             setDescription('');
             setCategory('');
+            setImage(null); // Clear image after submission
         } catch (error) {
             console.error("Error creating item listing:", error);
+            setErrorMessage("There was an error creating the item listing.");
         }
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen ">
-            <form onSubmit={handleSubmit} className=" p-6 rounded-lg shadow-lg border border-gray-600 w-full max-w-lg bg-gray-200">
+        <div className="flex items-center justify-center min-h-screen">
+            <form onSubmit={handleSubmit} className="p-6 rounded-lg shadow-lg border border-gray-600 w-full max-w-lg bg-gray-200">
                 <h2 className="text-xl font-bold mb-4 text-center text-black">Item Listing Information</h2>
 
-                {/* Display success message if present */}
                 {successMessage && (
                     <div className="mb-4 text-green-400 text-center">
                         {successMessage}
+                    </div>
+                )}
+
+                {errorMessage && (
+                    <div className="mb-4 text-red-400 text-center">
+                        {errorMessage}
                     </div>
                 )}
 
@@ -56,8 +99,9 @@ const ItemForm = () => {
                         <label className="block text-sm font-medium text-black">Item Name</label>
                         <input
                             type="text"
+                            name="name"
                             value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            onChange={handleChange}
                             className="mt-1 block w-full border border-gray-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm bg-gray-700 text-gray-200"
                         />
                     </div>
@@ -67,8 +111,9 @@ const ItemForm = () => {
                         <input
                             type="number"
                             step="0.01"
+                            name="price"
                             value={price}
-                            onChange={(e) => setPrice(e.target.value)}
+                            onChange={handleChange}
                             className="mt-1 block w-full border border-gray-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm bg-gray-700 text-gray-200"
                         />
                     </div>
@@ -77,8 +122,9 @@ const ItemForm = () => {
                         <label className="block text-sm font-medium text-black">Quantity</label>
                         <input
                             type="number"
+                            name="quantity"
                             value={quantity}
-                            onChange={(e) => setQuantity(e.target.value)}
+                            onChange={handleChange}
                             className="mt-1 block w-full border border-gray-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm bg-gray-700 text-gray-200"
                         />
                     </div>
@@ -86,8 +132,9 @@ const ItemForm = () => {
                     <div className="col-span-2">
                         <label className="block text-sm font-medium text-black">Description</label>
                         <textarea
+                            name="description"
                             value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            onChange={handleChange}
                             className="mt-1 block w-full border border-gray-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm bg-gray-700 text-gray-200"
                         />
                     </div>
@@ -95,8 +142,9 @@ const ItemForm = () => {
                     <div>
                         <label className="block text-sm font-medium text-black">Category</label>
                         <select
+                            name="category"
                             value={category}
-                            onChange={(e) => setCategory(e.target.value)}
+                            onChange={handleChange}
                             className="mt-1 block w-full border border-gray-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm bg-gray-700 text-gray-200"
                         >
                             <option value="">Select a category</option>
@@ -104,6 +152,17 @@ const ItemForm = () => {
                                 <option key={cat} value={cat}>{cat}</option>
                             ))}
                         </select>
+                    </div>
+
+                    <div className="col-span-2">
+                        <label className="block text-sm font-medium text-black">Image</label>
+                        <input
+                            type="file"
+                            name="image"
+                            accept="image/*"
+                            onChange={handleChange}
+                            className="mt-1 block w-full border border-gray-600 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm bg-gray-700 text-gray-200"
+                        />
                     </div>
                 </div>
 
