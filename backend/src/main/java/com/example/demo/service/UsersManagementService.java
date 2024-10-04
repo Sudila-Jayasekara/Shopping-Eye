@@ -7,6 +7,7 @@ import com.example.demo.repository.UsersRepo;
 import com.example.demo.repository.WishlistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ public class UsersManagementService {
             ourUser.setCity(registrationRequest.getCity());
             ourUser.setRole(registrationRequest.getRole());
             ourUser.setName(registrationRequest.getName());
+            ourUser.setImageUrl(registrationRequest.getImageUrl());
             ourUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
             OurUsers ourUsersResult = usersRepo.save(ourUser);
             if (ourUsersResult.getId()>0) {
@@ -62,16 +64,24 @@ public class UsersManagementService {
         return resp;
     }
 
-
-    public ReqRes login(ReqRes loginRequest){
+    
+    public ReqRes login(ReqRes loginRequest) {
         ReqRes response = new ReqRes();
         try {
-            authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
+            // Attempt to authenticate the user
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
                             loginRequest.getPassword()));
-            var user = usersRepo.findByEmail(loginRequest.getEmail()).orElseThrow();
+
+            // If authentication succeeds, find the user
+            var user = usersRepo.findByEmail(loginRequest.getEmail())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Generate JWT tokens
             var jwt = jwtUtils.generateToken(user);
             var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
+
+            // Set the response
             response.setStatusCode(200);
             response.setToken(jwt);
             response.setRole(user.getRole());
@@ -79,13 +89,17 @@ public class UsersManagementService {
             response.setExpirationTime("24Hrs");
             response.setMessage("Successfully Logged In");
 
-        }catch (Exception e){
+        } catch (BadCredentialsException e) {
+            // Handle invalid credentials
+            response.setStatusCode(401);
+            response.setMessage("Invalid email or password");
+        } catch (Exception e) {
+            // Handle other exceptions
             response.setStatusCode(500);
-            response.setMessage(e.getMessage());
+            response.setMessage("An error occurred: " + e.getMessage());
         }
         return response;
     }
-
 
 
 
@@ -180,6 +194,7 @@ public class UsersManagementService {
                 existingUser.setName(updatedUser.getName());
                 existingUser.setCity(updatedUser.getCity());
                 existingUser.setRole(updatedUser.getRole());
+                existingUser.setImageUrl(updatedUser.getImageUrl());
 
                 // Check if password is present in the request
                 if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
@@ -223,4 +238,18 @@ public class UsersManagementService {
         return reqRes;
 
     }
+    public ReqRes getUsersByEmail(String email) {
+        ReqRes reqRes = new ReqRes();
+        try {
+            OurUsers user = usersRepo.findByEmail(email).orElseThrow(() -> new RuntimeException("User Not found"));
+            reqRes.setOurUsers(user);
+            reqRes.setStatusCode(200);
+            reqRes.setMessage("User found successfully");
+        } catch (Exception e) {
+            reqRes.setStatusCode(500);
+            reqRes.setMessage("Error occurred: " + e.getMessage());
+        }
+        return reqRes;
+    }
+
 }

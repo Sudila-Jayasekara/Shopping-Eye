@@ -22,6 +22,7 @@ public class OurUsers implements UserDetails {
     private String password;
     private String city;
     private String role;
+    private String imageUrl;
 
     @OneToOne(cascade = CascadeType.ALL) // Cascade to automatically persist the wishlist
     @JoinColumn(name = "wishlist_id", referencedColumnName = "id")

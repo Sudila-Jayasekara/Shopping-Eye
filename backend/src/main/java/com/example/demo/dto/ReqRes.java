@@ -20,11 +20,13 @@ public class ReqRes {
     private String refreshToken;
     private String expirationTime;
 
+    private Long id;
     private String name;
     private String city;
     private String role;
     private String email;
     private String password;
+    private String imageUrl;
 
     private Wishlist wishlist;
     private OurUsers ourUsers;

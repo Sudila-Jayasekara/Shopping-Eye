@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Global API configuration
-const API_URL = 'http://localhost:1010/api/items';
+const API_URL = 'http://localhost:1010/public/items';
 const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/diejjxqts/image/upload'; // Your Cloudinary URL
 const UPLOAD_PRESET = 'estate'; // Your Cloudinary upload preset
 
@@ -69,3 +69,15 @@ export const updateItem = async (id, updatedItem) => {
         throw error;
     }
 };
+
+// Function to fetch a single item by its ID
+export const getItemById = async (id) => {
+    try {
+        const response = await axios.get(`${API_URL}/${id}`);
+        return response.data; // Return the item data fetched
+    } catch (error) {
+        console.error(`Error fetching the item with ID ${id}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
+

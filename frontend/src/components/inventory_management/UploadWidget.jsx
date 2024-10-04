@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { uploadImage } from './api'; // Correct path
+import { uploadImage } from './InventoryService'; // Correct path
 
 const UploadWidget = () => {
     const [selectedFile, setSelectedFile] = useState(null);

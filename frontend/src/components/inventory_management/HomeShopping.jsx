@@ -97,16 +97,25 @@ const HomeShopping = () => {
                 <p className="text-2xl font-bold text-grey-400">Rs. {item.price.toFixed(2)}</p>
               </div>
               <div className="mb-2">
-                <p className="text-xl">Quantity: {quantities[item.id] || 0}</p> {/* Display quantity */}
+                <p className="text-xl">Quantity: {item.quantity}</p> {/* Display quantity */}
               </div>
               <div className="flex justify-between items-center mt-4">
                 <Link to={`/item/${item.id}`} className="bg-white text-gray-800 px-3 py-1 rounded text-center block">View Details</Link>
-                <a
-                  href="#"
-                  className="text-white hover:text-dark-red transition-colors duration-300 text-2xl ml-4"
-                >
-                  <i className="fas fa-heart"></i>
-                </a>
+                <Link 
+                to={`/addtowishlist/${item.id}`} 
+                className="text-white hover:text-dark-red transition-colors duration-300 text-2xl ml-4"
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent the default link behavior
+                  const confirmed = window.confirm("Item added to wishlist!"); // Show alert
+                  if (confirmed) {
+                    // If the user clicks 'OK', redirect to the add to wishlist action
+                    window.location.href = `/addtowishlist/${item.id}`;
+                  }
+                }}
+              >
+                <i className="fas fa-heart"></i>
+              </Link>
+
               </div>
             </div>
           ))
