@@ -1,16 +1,17 @@
-// ItemDetails.js
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { getAllItems, updateItemQuantity } from './api'; 
-import { QuantityContext } from './QuantityContext'; 
-import SuggestedItems from './SuggestedItems'; // Import the new SuggestedItems component
+import axios from 'axios';
+import { getAllItems, updateItemQuantity } from './api';
+import { QuantityContext } from './QuantityContext';
+import SuggestedItems from './SuggestedItems';
 
 const ItemDetails = () => {
   const { id } = useParams();
   const [item, setItem] = useState(null);
-  const { quantities, updateQuantity } = useContext(QuantityContext); 
+  const { quantities, updateQuantity } = useContext(QuantityContext);
+  const [stockMessage, setStockMessage] = useState(''); // Manage stock limit message
+  const [buyMessage, setBuyMessage] = useState(''); // Manage purchase message
 
-  // Initialize currentQuantity from local storage, default to 1
   const [currentQuantity, setCurrentQuantity] = useState(() => {
     const storedQuantity = localStorage.getItem(`quantity_${id}`);
     return storedQuantity ? parseInt(storedQuantity, 10) : 1;
@@ -21,10 +22,9 @@ const ItemDetails = () => {
       try {
         const data = await getAllItems();
         if (Array.isArray(data)) {
-          const foundItem = data.find((item) => item.id === parseInt(id, 10)); 
+          const foundItem = data.find((item) => item.id === parseInt(id, 10));
           if (foundItem) {
             setItem(foundItem);
-            // Ensure we set the initial quantity in context
             updateQuantity(id, currentQuantity);
           } else {
             console.error("Item not found for the given ID");
@@ -37,47 +37,70 @@ const ItemDetails = () => {
       }
     };
     fetchItem();
-  }, [id, updateQuantity]);
+  }, [id, currentQuantity, updateQuantity]);
 
   const handleIncreaseQuantity = async () => {
     const newQuantity = currentQuantity + 1;
 
-    // Check if the new quantity does not exceed available stock
     if (item && newQuantity <= item.quantity) {
       setCurrentQuantity(newQuantity);
-      localStorage.setItem(`quantity_${id}`, newQuantity); // Save to local storage
-      updateQuantity(id, newQuantity);
+      localStorage.setItem(`quantity_${id}`, newQuantity);
+
+      const remainingStock = item.quantity - newQuantity;
+      updateQuantity(id, remainingStock);
 
       try {
-        await updateItemQuantity(id, item.quantity - newQuantity); // Reduce stock by the new quantity
+        await updateItemQuantity(id, remainingStock);
+        setStockMessage(''); // Clear message when there's available stock
       } catch (error) {
         console.error("Error updating quantity:", error);
       }
+    } else {
+      setStockMessage('No more stock available'); // Show message when stock limit is reached
     }
   };
 
   const handleDecreaseQuantity = async () => {
-    if (currentQuantity > 1) { // Minimum quantity is 1
+    if (currentQuantity > 1) {
       const newQuantity = currentQuantity - 1;
       setCurrentQuantity(newQuantity);
-      localStorage.setItem(`quantity_${id}`, newQuantity); // Save to local storage
-      updateQuantity(id, newQuantity);
+      localStorage.setItem(`quantity_${id}`, newQuantity);
+
+      const remainingStock = item.quantity - newQuantity;
+      updateQuantity(id, remainingStock);
 
       try {
-        await updateItemQuantity(id, item.quantity - newQuantity); // Reduce stock accordingly
+        await updateItemQuantity(id, remainingStock);
+        setStockMessage(''); // Clear message on decrease
       } catch (error) {
         console.error("Error updating quantity:", error);
       }
     }
   };
 
-  // This effect runs when the component unmounts
-  useEffect(() => {
-    return () => {
-      // Optional: You could clear the local storage for the quantity when leaving the page
-      // localStorage.removeItem(`quantity_${id}`);
-    };
-  }, [id]);
+  const handleBuyItem = async () => {
+    if (item && currentQuantity <= item.quantity) {
+      const remainingStock = item.quantity - currentQuantity;
+
+      try {
+        await updateItemQuantity(id, remainingStock);
+
+        updateQuantity(id, remainingStock);
+        setItem((prevItem) => ({ ...prevItem, quantity: remainingStock }));
+
+        localStorage.removeItem(`quantity_${id}`);
+
+        setBuyMessage(`Purchase successful! You bought ${currentQuantity} ${item.name}(s).`);
+
+        setCurrentQuantity(1);
+      } catch (error) {
+        console.error("Error completing purchase:", error);
+        setBuyMessage('Error completing purchase. Please try again.');
+      }
+    } else {
+      setBuyMessage('Insufficient stock available.');
+    }
+  };
 
   if (!item) return <div>Loading...</div>;
 
@@ -112,7 +135,7 @@ const ItemDetails = () => {
               <button 
                 onClick={handleDecreaseQuantity} 
                 className={`bg-gray-300 px-3 py-1 rounded ${currentQuantity === 1 && 'cursor-not-allowed'}`}
-                disabled={currentQuantity === 1} 
+                disabled={currentQuantity === 1}
               >
                 -
               </button>
@@ -120,8 +143,14 @@ const ItemDetails = () => {
               <button onClick={handleIncreaseQuantity} className="bg-gray-300 px-3 py-1 rounded">+</button>
             </div>
 
+            {stockMessage && <p className="text-red-500 font-bold mt-2">{stockMessage}</p>}
+            {buyMessage && <p className="text-blue-500 font-bold mt-2">{buyMessage}</p>}
+
             <div className="flex space-x-4 items-center mt-4">
-              <button className="bg-white text-dark-blue px-4 py-2 rounded border border-blue-700 hover:bg-dark-blue hover:text-white">
+              <button 
+                className="bg-white text-dark-blue px-4 py-2 rounded border border-blue-700 hover:bg-dark-blue hover:text-white"
+                onClick={handleBuyItem}
+              >
                 Buy
               </button>
               <button className="bg-white text-dark-blue px-4 py-2 rounded border border-blue-700 hover:bg-dark-blue hover:text-white">
@@ -134,7 +163,6 @@ const ItemDetails = () => {
           </div>
         </div>
 
-        {/* Include SuggestedItems Component */}
         <SuggestedItems currentItemId={parseInt(id, 10)} />
       </div>
     </div>
