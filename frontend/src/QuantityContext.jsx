@@ -1,9 +1,9 @@
-import { createContext, useState } from 'react';
+import React, { createContext, useState } from 'react';
 
 export const QuantityContext = createContext();
 
 export const QuantityProvider = ({ children }) => {
-  const [quantities, setQuantities] = useState({}); // Store quantities of all items
+  const [quantities, setQuantities] = useState({});
 
   const updateQuantity = (itemId, newQuantity) => {
     setQuantities((prevQuantities) => ({

@@ -68,4 +68,21 @@ export const updateItem = async (id, updatedItem) => {
         console.error(`Error updating the item with ID ${id}:`, error.response?.data || error.message);
         throw error;
     }
+
+    
 };
+// Function to update the quantity of an item in the backend
+// Function to update the quantity of an item in the backend
+export const updateItemQuantity = async (id, quantity) => {
+    try {
+        const response = await axios.put(`${API_URL}/${id}/quantity`, { quantity });
+        return response.data; // Return updated item data
+    } catch (error) {
+        console.error(`Error updating the item quantity with ID ${id}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
+  
+
+
+
