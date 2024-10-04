@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ItemListingRepository extends JpaRepository<ItemListing, Long> {
-    // You can remove custom query methods if you want to match the PaymentRepository style
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from './components/user_management/LoginPage';
 import RegistrationPage from './components/user_management/RegistrationPage';
@@ -11,6 +11,8 @@ import AdminPaymentView from './components/order_process_management/AdminPayment
 import ItemForm from './components/inventory_management/itemForm';
 import Inventory from './components/inventory_management/Inventory';
 import HomeShopping from './components/inventory_management/HomeSopping';
+import ItemDetails from "./components/inventory_management/ItemDetails";
+import ShoppingCart from "./components/order_process_management/ShoppingCart";
 import Header from './Header';
 import Footer from './footer';
 
@@ -36,13 +38,18 @@ function App() {
                 <Route path="/register" element={<RegistrationPage />} />
                 <Route path="/update-user/:userId" element={<UpdateUser />} />
                 <Route path="/admin/user-management" element={<UserManagementPage />} />
-                <Route path="/admin/payments" element={<AdminPaymentView />} />
               </>
             )}
             
             <Route path="/payment" element={<PaymentForm />} />
             <Route path="/create-item" element={<ItemForm />} />
             <Route path="/inventory" element={<Inventory />} />
+            <Route path="/admin/payments" element={<AdminPaymentView />} />
+            <Route path="/item/:id" element={<ItemDetails />} />
+            <Route path="/" element={<HomeShopping />} />
+            <Route path="/cart" element={<ShoppingCart />} />
+           
+
             
             {/* Redirect all other routes to login */}
             <Route path="*" element={<Navigate to="/login" />} />

@@ -21,6 +21,8 @@ public class Payment {
     private String zipCode;
     private String email;
     private String phoneNumber;
+    private Double totalPrice;  // Add totalPrice field
+    private String paymentDate; // Add paymentDate field
 
     // Default constructor
     public Payment() {}
@@ -114,4 +116,13 @@ public class Payment {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    public Double getTotalPrice() {return totalPrice;}
+
+    public void setTotalPrice(Double totalPrice) {this.totalPrice = totalPrice;}
+
+    public String getPaymentDate() {return paymentDate;}
+
+    public void setPaymentDate(String paymentDate) {this.paymentDate = paymentDate;}
 }
+
