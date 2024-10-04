@@ -15,11 +15,6 @@ public class WishlistService {
     @Autowired
     private WishlistRepository wishlistRepository;
 
-    public ResponseEntity<List<Wishlist>> getAllWishlists() {
-        List<Wishlist> wishlists = wishlistRepository.findAll();
-        return new ResponseEntity<>(wishlists, HttpStatus.OK);
-    }
-
     public ResponseEntity<Wishlist> getWishlistById(Long id) {
         Optional<Wishlist> wishlist = wishlistRepository.findById(id);
         return wishlist.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
@@ -31,21 +26,26 @@ public class WishlistService {
         return new ResponseEntity<>(savedWishlist, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<Void> deleteWishlist(Long id) {
-        Optional<Wishlist> wishlist = wishlistRepository.findById(id);
-        if (wishlist.isPresent()) {
-            wishlistRepository.deleteById(id);
+
+    public ResponseEntity<Void> addItemToWishlist(Long id, Long itemId) {
+        Optional<Wishlist> wishlistOptional = wishlistRepository.findById(id);
+        if (wishlistOptional.isPresent()) {
+            Wishlist wishlist = wishlistOptional.get();
+            wishlist.addItem(itemId);
+            wishlistRepository.save(wishlist);
             return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<Wishlist> getWishlistByUserEmail(String email) {
-        Optional<Wishlist> wishlist = wishlistRepository.findByUserEmail(email);
-        return wishlist.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Void> removeItemFromWishlist(Long id, Long itemId) {
+        Optional<Wishlist> wishlistOptional = wishlistRepository.findById(id);
+        if (wishlistOptional.isPresent()) {
+            Wishlist wishlist = wishlistOptional.get();
+            wishlist.removeItem(itemId);
+            wishlistRepository.save(wishlist);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-
 }

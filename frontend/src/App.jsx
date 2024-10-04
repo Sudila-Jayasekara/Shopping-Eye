@@ -13,11 +13,11 @@ import ItemForm from './components/inventory_management/itemForm';
 import Inventory from './components/inventory_management/Inventory';
 import HomeShopping from './components/inventory_management/HomeShopping';
 import ItemDetails from './components/inventory_management/ItemDetails';
-import { QuantityProvider } from './components/inventory_management/QuantityContext'; // Import QuantityProvider
+import { QuantityProvider } from './components/inventory_management/QuantityContext';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import Header from './Header';
-import Footer from './footer';
+import Footer from './Footer';
 
 function App() {
   // Check if user is authenticated and admin

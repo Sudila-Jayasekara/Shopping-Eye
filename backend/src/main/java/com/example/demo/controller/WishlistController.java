@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/adminuser/wishlist") // base URL
+@RequestMapping("/adminuser/wishlist")
 public class WishlistController {
     @Autowired
     private WishlistService wishlistService;
@@ -22,22 +22,17 @@ public class WishlistController {
         return wishlistService.saveWishlist(wishlist);
     }
 
-    @GetMapping("/get-all")
-    public ResponseEntity<List<Wishlist>> getAllWishlists() {
-        return wishlistService.getAllWishlists();
+    @PutMapping("/{id}/add-item/{itemId}")
+    public ResponseEntity<Void> addItemToWishlist(@PathVariable Long id, @PathVariable Long itemId) {
+        return wishlistService.addItemToWishlist(id, itemId);
     }
 
-    @GetMapping("/my")
-    public ResponseEntity<Wishlist> getWishlistByUserEmail() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        String email = authentication.getName();
-        System.out.println("Authenticated user's email: " + email); // Debugging line
-        return wishlistService.getWishlistByUserEmail(email);
+    @DeleteMapping("/{id}/remove-item/{itemId}")
+    public ResponseEntity<Void> removeItemFromWishlist(@PathVariable Long id, @PathVariable Long itemId) {
+        return wishlistService.removeItemFromWishlist(id, itemId);
     }
-
-
-
+    @GetMapping("/{id}")
+    public ResponseEntity<Wishlist> getWishlistById(@PathVariable Long id) {
+        return wishlistService.getWishlistById(id);
+    }
 }

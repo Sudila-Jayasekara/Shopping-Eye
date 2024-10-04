@@ -7,7 +7,7 @@ function Header() {
         <div className="text-2xl font-bold">Shopping Eye</div>
         <nav>
           <ul className="flex space-x-4">
-            <li><a href="/" className="hover:underline">Home</a></li>
+            <li><a href="/wishlist" className="hover:underline">Wishlist</a></li>
             <li><a href="/about" className="hover:underline">About</a></li>
             <li><a href="/services" className="hover:underline">Services</a></li>
             <li><a href="/contact" className="hover:underline">Contact</a></li>
