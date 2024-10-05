@@ -100,20 +100,20 @@ const HomeShopping = () => {
         </div>
       </div>
 
-      {/* Category Filter Bar */}
       <div className="flex justify-center mb-6">
-        {categories.map((category) => (
-          <button
-            key={category}
-            className={`px-4 py-2 mx-2 rounded-full ${
-              activeCategory === category ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'
-            }`}
-            onClick={() => filterByCategory(category)}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
+  {categories.map((category) => (
+    <button
+      key={category}
+      className={`px-6 py-3 mx-2 rounded shadow-lg transition-transform transform hover:scale-105 ${
+        activeCategory === category ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-200'
+      } hover:bg-blue-500 focus:outline-none`}
+      onClick={() => filterByCategory(category)}
+    >
+      {category}
+    </button>
+  ))}
+</div>
+
 
       {/* Items Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

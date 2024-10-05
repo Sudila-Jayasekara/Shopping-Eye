@@ -126,7 +126,7 @@ const ItemDetails = () => {
             <p className="text-xl font-lora mb-4">Description: {item.description}</p>
             <p className="text-2xl font-bold text-green-400 mb-4">Price: Rs. {item.price.toFixed(2)}</p>
 
-            <p className="text-xl mb-4">Stock Status: {stockStatus(item.quantity)}</p>
+            <p className="text-xl mb-4">{stockStatus(item.quantity)}</p>
             <p className="text-xl mb-4">Total Value: Rs. {totalValue.toFixed(2)}</p>
 
             <div className="flex items-center space-x-4">
