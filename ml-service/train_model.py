@@ -1,22 +1,17 @@
+# train_model.py
+
 import os
-os.environ['MATCH_MANIFEST_VERSIONS'] = 'false'
 import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
+from sample_data import get_issues_and_solutions
 
-# Sample Data
-data = [
-    {"issue": "Screen not working", "solution": "Replace the screen"},
-    {"issue": "Battery not charging", "solution": "Replace the battery"},
-    {"issue": "Phone overheating", "solution": "Check for app issues"},
-    {"issue": "Camera not working", "solution": "Replace the camera module"},
-    {"issue": "Speaker not working", "solution": "Replace the speaker"},
-]
+# Set environment variable (if needed for compatibility)
+os.environ['MATCH_MANIFEST_VERSIONS'] = 'false'
 
-# Split data into issues and solutions
-issues = [item['issue'] for item in data]
-solutions = [item['solution'] for item in data]
+# Get issues and solutions from sample_data
+issues, solutions = get_issues_and_solutions()
 
 # Create a pipeline with TfidfVectorizer and LogisticRegression
 model = Pipeline([
@@ -27,5 +22,7 @@ model = Pipeline([
 # Train the model
 model.fit(issues, solutions)
 
-# Save the model to disk
+# Save the trained model to disk
 joblib.dump(model, 'model.pkl')
+
+print("Model trained and saved successfully as model.pkl")
