@@ -14,6 +14,7 @@ import Inventory from './components/inventory_management/Inventory';
 import HomeShopping from './components/inventory_management/HomeShopping';
 import ItemDetails from './components/inventory_management/ItemDetails';
 import { QuantityProvider } from './components/inventory_management/QuantityContext'; // Import QuantityProvider
+import ShoppingCart from "./components/order_process_management/ShoppingCart";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import Header from './Header';
@@ -53,6 +54,7 @@ function App() {
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/home" element={<HomeShopping />} />
               <Route path="/item/:id" element={<ItemDetails />} />
+              <Route path="/cart" element={<ShoppingCart />} />
               
               {/* Redirect all other routes to login */}
               <Route path="*" element={<Navigate to="/login" />} />

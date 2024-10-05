@@ -1,12 +1,18 @@
 import { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
-import { getAllItems } from './InventoryService';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getAllItems, getFeedbackByItemId, submitFeedback  } from './InventoryService';
 import { QuantityContext } from './QuantityContext'; // Import the context
 
 const ItemDetails = () => {
   const { id } = useParams();
   const [item, setItem] = useState(null);
   const { quantities, updateQuantity } = useContext(QuantityContext); // Get quantity and updateQuantity function from context
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false); // For showing the success message
+  const navigate = useNavigate();
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
+  const [customerName, setCustomerName] = useState('');
 
   const currentQuantity = quantities[id] || 0; // Default quantity is 0 if not set
 
@@ -24,7 +30,18 @@ const ItemDetails = () => {
         console.error("Error fetching item details:", error);
       }
     };
+
+    const fetchFeedbacks = async () => {
+      try{
+          const feedbackData = await getFeedbackByItemId(id);
+          setFeedbacks(feedbackData);
+      }catch (error) {
+          console.error("Error fetching feedbacks!", error);
+      }
+    };
+
     fetchItem();
+    fetchFeedbacks();
   }, [id]);
 
   const handleIncreaseQuantity = () => {
@@ -34,6 +51,63 @@ const ItemDetails = () => {
   const handleDecreaseQuantity = () => {
     if (currentQuantity > 0) {
       updateQuantity(id, currentQuantity - 1);
+    }
+  };
+  const addToCart = (item) => {
+    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    const existingItem = cartItems.find(cartItem => cartItem.id === item.id);
+  
+    if (existingItem) {
+      existingItem.quantity = Math.min(existingItem.quantity + currentQuantity, item.stock);
+    } else {
+      cartItems.push({ ...item, quantity: currentQuantity });
+    }
+  
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+    // Show success message
+    setShowSuccessMessage(true);
+    // Hide message after 3 seconds
+    setTimeout(() => {
+        setShowSuccessMessage(false);
+    }, 3000);
+    updateQuantity(id, 0);  // Reset quantity after adding to cart
+
+
+  };
+
+  const handleBuy = () => {
+    const totalPrice = item.price * currentQuantity; // Calculate the total price based on item price and selected quantity
+  
+  // Store total price and other necessary info in sessionStorage
+  sessionStorage.setItem('totalPrice', totalPrice);
+  sessionStorage.setItem('selectedQuantity', currentQuantity); // Optional, if you want to track quantity
+
+  // Navigate to the payment page
+    navigate('/payment');
+  };
+
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+  };
+
+  const handleFeedbackSubmit = async (e) => {
+    e.preventDefault();
+
+    const newFeedback = {
+        customerName,
+        rating,
+        comment,
+        item: { id: item.id },
+    };
+
+    try {
+        await submitFeedback(newFeedback);
+        setFeedbacks(prevFeedbacks => [...prevFeedbacks, newFeedback]);
+        setRating(0);
+        setComment('');
+        setCustomerName('');
+    } catch (error) {
+        console.error("Error submitting feedback:", error);
     }
   };
 
@@ -61,18 +135,82 @@ const ItemDetails = () => {
             </div>
 
             <div className="flex space-x-4 items-center mt-4">
-              <button className="bg-white text-dark-blue px-4 py-2 rounded border border-blue-700 hover:bg-dark-blue hover:text-white">
+              <button onClick={handleBuy} className="bg-white text-dark-blue px-4 py-2 rounded border border-blue-700 hover:bg-dark-blue hover:text-white">
                 Buy
               </button>
-              <button className="bg-white text-dark-blue px-4 py-2 rounded border border-blue-700 hover:bg-dark-blue hover:text-white">
+              <button onClick={() => addToCart(item)} className="bg-white text-dark-blue px-4 py-2 rounded border border-blue-700 hover:bg-dark-blue hover:text-white">
                 Add to Cart
               </button>
               <a href="#" className="text-black hover:text-dark-red transition-colors duration-300 text-2xl">
                 <i className="fas fa-heart"></i>
               </a>
             </div>
+            {showSuccessMessage && (
+                            <div className="mt-4 text-green-500">
+                                Item added to the shopping cart successfully!
+                            </div>
+            )}
           </div>
         </div>
+
+        <div className="mt-20 bg-yellow-50 p-10 rounded-lg shadow">
+                            <h2 className="text-xl font-bold mb-10 ">Customer Feedback</h2>
+                            {feedbacks.length === 0 ? (
+                                <p>No feedbacks yet. Be the first to review!</p>
+                            ) : (
+                                feedbacks.map((feedback , index) => (
+                                    <div key={index} className="border-b pb-4 mb-4">
+                                        <p className="font-bold">{feedback.customerName}</p>
+                                        <div className="text-yellow-400">
+                                            {'★'.repeat(feedback.rating)}{' '}
+                                            {'☆'.repeat(5 - feedback.rating)}
+                                        </div>
+                                        <p>{feedback.comment}</p>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+
+                        {/* Star Rating Form */}
+                        <form onSubmit={handleFeedbackSubmit} className="bg-gray-100 p-4 rounded-lg shadow mt-10">
+                            <div>
+                                <label className="block mb-2 font-bold">Your Name</label>
+                                <input
+                                    type="text"
+                                    value={customerName}
+                                    onChange={(e) => setCustomerName(e.target.value)}
+                                    className="w-full p-2 border rounded mb-4"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="block mb-2 font-bold">Rating</label>
+                                <div className="flex space-x-3 mb-4">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                         <span
+                                         key={star}
+                                         onClick={() => handleRatingChange(star)}
+                                         className={`cursor-pointer inline-block ${star <= rating ? 'text-yellow-500' : 'text-gray-400'}`}
+                                     >
+                                         ★
+                                     </span>
+                                    ))}
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block mb-2 font-bold">Comment</label>
+                                <textarea
+                                    value={comment}
+                                    onChange={(e) => setComment(e.target.value)}
+                                    className="w-full p-2 border rounded"
+                                    required
+                                />
+                            </div>
+                            <button type="submit" className="mt-4 w-60 bg-green-700 text-white p-3 rounded ">
+                                Submit Feedback
+                            </button>
+                        </form>
+
       </div>
     </div>
   );
