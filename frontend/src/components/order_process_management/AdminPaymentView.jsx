@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable'; // Include the jsPDF Autotable plugin
 
 const AdminPaymentView = () => {
     const [payments, setPayments] = useState([]);
@@ -24,6 +26,35 @@ const AdminPaymentView = () => {
         } catch (error) {
             console.error("Error deleting payment:", error);
         }
+    };
+    const downloadPdf = () => {
+        const doc = new jsPDF();
+
+        // Table headers
+        const headers = [['ID', 'Payment Method', 'Full Name', 'Billing Address', 'Phone Number', 'Email']];
+
+        // Table data without the Actions column
+        const data = payments.map(payment => [
+            payment.id,
+            payment.paymentMethod,
+            `${payment.firstName} ${payment.lastName}`,
+            payment.billingAddress,
+            payment.phoneNumber,
+            payment.email,
+        ]);
+
+        // Add title to the PDF
+        doc.text('Payment Details', 10, 10);
+
+        // Generate table in the PDF
+        doc.autoTable({
+            head: headers,
+            body: data,
+            startY: 20, // Positioning the table
+        });
+
+        // Save the generated PDF
+        doc.save('payment_details.pdf');
     };
 
     return (
@@ -64,6 +95,15 @@ const AdminPaymentView = () => {
                     ))}
                 </tbody>
             </table>
+
+             {/* Download PDF Button */}
+             <button
+                onClick={downloadPdf}
+                className="bg-green-700 text-white px-4 py-2 rounded mt-10"
+            >
+                Download PDF
+            </button>
+            
         </div>
     );
 };

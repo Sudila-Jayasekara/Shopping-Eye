@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createItem } from './InventoryService'; // Ensure this path is correct
+import { createItem ,uploadImage} from './InventoryService'; // Ensure this path is correct
 
 const ItemForm = () => {
     const [name, setName] = useState('');

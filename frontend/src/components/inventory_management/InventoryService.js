@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 // Global API configuration
-const API_URL = 'http://localhost:1010/api/items';
+const API_URL = 'http://localhost:1010/public/items';
 const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/diejjxqts/image/upload'; // Your Cloudinary URL
 const UPLOAD_PRESET = 'estate'; // Your Cloudinary upload preset
+const FEEDBACK_API_URL = 'http://localhost:1010/public/feedback';
 
 // Set default headers for JSON requests globally (this applies to all axios requests)
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -66,6 +67,30 @@ export const updateItem = async (id, updatedItem) => {
         return response.data; // Return updated item data
     } catch (error) {
         console.error(`Error updating the item with ID ${id}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
+
+// Function to fetch feedback by item ID
+export const getFeedbackByItemId = async (itemId) => {
+    try {
+        const response = await axios.get(`${FEEDBACK_API_URL}/item/${itemId}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching feedbacks!", error);
+        throw error;
+    }
+};
+
+// Function to submit feedback
+export const submitFeedback = async (feedbackData) => {
+    try {
+        const response = await axios.post(FEEDBACK_API_URL, feedbackData, {
+            headers: { 'Content-Type': 'application/json' }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error submitting feedback!", error);
         throw error;
     }
 };
