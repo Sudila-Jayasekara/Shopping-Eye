@@ -33,8 +33,8 @@ function UserManagementPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-8">
-      <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6">
+    <div className="min-h-screen bg-gray-100 flex  py-8"> {/* Added flex and center alignment */}
+      <div className="w-full bg-white shadow-lg rounded-lg p-6 m-4"> {/* Set a max width for better centering */}
         <h2 className="text-3xl font-bold text-center text-blue-600 mb-8">Users Management Page</h2>
         <div className="flex justify-end mb-4">
           <Link to="/register" className="bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600">

@@ -88,7 +88,7 @@ function ProfilePage() {
             {/* Wishlist Section */}
             <div className="w-2/6 flex-grow bg-white rounded-lg shadow-lg p-8 m-4">
                 <h2 className="text-3xl font-bold text-center text-blue-600 mb-4">
-                    Your Wishlist
+                    Your Personal Wishlist
                 </h2>
                 {error ? (
                     <div className="text-red-500">Error: {error}</div>

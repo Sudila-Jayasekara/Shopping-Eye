@@ -64,7 +64,7 @@ public class UsersManagementService {
         return resp;
     }
 
-    
+
     public ReqRes login(ReqRes loginRequest) {
         ReqRes response = new ReqRes();
         try {
