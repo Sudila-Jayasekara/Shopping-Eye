@@ -10,7 +10,7 @@ const images = [
   'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/10/59/ad/1b.jpg'
 ];
 
-const categories = ["All Items","Food", "Electronics", "Clothing", "Home Appliances", "Books", "Furniture", "Accessories"];
+const categories = ["All Items","Food", "Electronics", "Clothing", "Home Appliances", "Cosmetics", "Furniture", "Accessories"];
 
 const HomeShopping = () => {
   const [items, setItems] = useState([]);

@@ -86,12 +86,12 @@ const ItemDetails = () => {
 
         localStorage.removeItem(`quantity_${id}`);
 
-        setBuyMessage(`Purchase successful! You bought ${currentQuantity} ${item.name}(s).`);
+        setBuyMessage(`removed  ${currentQuantity} ${item.name}(s) from the current quantity.`);
 
         setCurrentQuantity(1);
       } catch (error) {
-        console.error("Error completing purchase:", error);
-        setBuyMessage('Error completing purchase. Please try again.');
+        console.error("Error completing stock reduction:", error);
+        setBuyMessage('Error completing stock reduction. Please try again.');
       }
     } else {
       setBuyMessage('Insufficient stock available.');
@@ -122,7 +122,6 @@ const ItemDetails = () => {
           <div className="lg:w-1/2 lg:pl-6">
             <h1 className="text-3xl font-playfair font-bold">{item.name}</h1>
             <p className="text-lg font-lora mb-4">Category: {item.category}</p>
-            <p className="text-lg font-lora mb-4">Shop: {item.shop}</p>
             <p className="text-xl font-lora mb-4">Description: {item.description}</p>
             <p className="text-2xl font-bold text-green-400 mb-4">Price: Rs. {item.price.toFixed(2)}</p>
 
@@ -146,12 +145,12 @@ const ItemDetails = () => {
 
             <div className="flex space-x-4 items-center mt-4">
               <button 
-                className="bg-white text-dark-blue px-4 py-2 rounded border border-blue-700 hover:bg-dark-blue hover:text-white"
+                className="bg-gray-800 text-white px-4 py-2 rounded border hover:bg-gray-500 focus:outline-none"
                 onClick={handleBuyItem}
               >
                 Buy
               </button>
-              <button className="bg-white text-dark-blue px-4 py-2 rounded border border-blue-700 hover:bg-dark-blue hover:text-white">
+              <button className="bg-gray-800 text-white px-4 py-2 rounded border hover:bg-gray-500 focus:outline-none">
                 Add to Cart
               </button>
               <a href="#" className="text-black hover:text-dark-red transition-colors duration-300 text-2xl">
