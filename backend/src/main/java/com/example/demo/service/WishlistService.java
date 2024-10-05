@@ -48,4 +48,5 @@ public class WishlistService {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
 }

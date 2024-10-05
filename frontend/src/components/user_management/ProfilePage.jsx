@@ -3,15 +3,22 @@ import UserService from './UsersService';
 import { Link } from 'react-router-dom';
 import { getWishlistByUserId } from '../wishlist_management/WishlistService'; // Import WishlistService for fetching wishlist
 import { getItemById } from '../inventory_management/InventoryService'; // Import for fetching item details
-
+import CreateSharedWishlistModel from '../wishlist_management/Shared/CreateSharedWishlistModel';
+import { createSharedWishlist } from '../wishlist_management/Shared/SharedWishlistService'; // Import the service function for creating shared wishlist
+import { getSharedWishlistsByUserId } from '../wishlist_management/Shared/SharedWishlistService'; // Import the service function for fetching shared wishlists
+import { addMemberToSharedWishlist } from '../wishlist_management/Shared/SharedWishlistService'; // Import the service function for adding a member to a shared wishlist
+ 
 function ProfilePage() {
     const [profileInfo, setProfileInfo] = useState({});
     const [wishlist, setWishlist] = useState([]);
     const [error, setError] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    //const [sharedWishlists, setSharedWishlists] = useState([]); // State for shared wishlists
 
     useEffect(() => {
         fetchProfileInfo();
         fetchWishlist();
+        //fetchSharedWishlists();
     }, []);
 
     const fetchProfileInfo = async () => {
@@ -35,7 +42,7 @@ function ProfilePage() {
                 const user = await UserService.getUserByToken(token);
                 const userId = user.ourUsers.id;
                 const data = await getWishlistByUserId(userId, token);
-                
+
                 // Fetch item details for the wishlist
                 const itemsData = await Promise.all(
                     data.itemIds.map(async (itemId) => {
@@ -51,6 +58,61 @@ function ProfilePage() {
             setError('Token is missing');
         }
     };
+
+    const fetchSharedWishlists = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const user = await UserService.getUserByToken(token);
+                const userId = user.ourUsers.id;
+                const sharedData = await getSharedWishlistsByUserId(userId, token); // Fetch shared wishlists
+    
+                setSharedWishlists(sharedData); // Update state with shared wishlists
+            } catch (err) {
+                setError(err.message);
+            }
+        } else {
+            setError('Token is missing');
+        }
+    };
+    
+    // const handleCreateSharedWishlist = async ({ name, memberEmail }) => {
+    //     try {
+    //         const token = localStorage.getItem('token');
+    //         const ownerId = profileInfo.id; // Assuming profileInfo contains the current user's ID
+    
+    //         // Prepare the wishlist data according to the backend's requirement
+    //         const wishlistData = {
+    //             name,
+    //             owner: { id: ownerId } // Correctly structure the owner object
+    //         };
+    
+    //         // Call the API to create the shared wishlist
+    //         const newWishlist = await createSharedWishlist(wishlistData, token);
+            
+    //         console.log('Shared Wishlist Created:', newWishlist);
+            
+    //         // Extract the wishlist ID from the newly created wishlist
+    //         const wishlistId = newWishlist.id; // Ensure this matches your actual structure
+            
+    //         // Prepare the member data based on the provided email
+    //         const memberData = { email: memberEmail };
+    
+    //         // Call the API to add the member to the newly created shared wishlist
+    //         const updatedWishlist = await addMemberToSharedWishlist(wishlistId, memberData, token);
+            
+    //         console.log(`Member ${memberEmail} added to wishlist ${wishlistId}.`, updatedWishlist);
+    
+    //         // Update the state with the new wishlist
+    //         setSharedWishlists((prev) => [...prev, newWishlist]); // Update sharedWishlists state
+    //         setIsModalOpen(false); // Close the modal after creation
+    //     } catch (error) {
+    //         console.error('Error creating shared wishlist or adding member:', error);
+    //         setError('Failed to create shared wishlist or add member.'); // Handle errors appropriately
+    //     }
+    // };
+    
+    
 
     return (
         <div className="min-h-screen flex bg-gray-100 py-4">
@@ -86,9 +148,43 @@ function ProfilePage() {
             </div>
 
             {/* Wishlist Section */}
-            <div className="w-2/6 flex-grow bg-white rounded-lg shadow-lg p-8 m-4">
+            <div className="w-2/6 flex-grow bg-white rounded-lg shadow-lg p-8 m-4 max-h-screen overflow-y-auto">
+                
+                {/* <h2 className="text-3xl font-bold text-center text-blue-600 mb-4">
+                    Shared Wishlists
+                </h2>
+
+                <div className="space-y-4">
+                    {sharedWishlists.length > 0 ? (
+                        sharedWishlists.map((wishlist) => (
+                            <div key={wishlist.id} className="bg-gray-100 rounded-lg p-4">
+                                <h3 className="text-xl font-semibold">{wishlist.name}</h3>
+                                <p className="text-gray-700">Members: {wishlist.members.join(', ')}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-center text-gray-500">No shared wishlists</p>
+                    )}
+                </div>
+                
+
+                <div className="mb-4 mt-4">
+                    <button
+                        onClick={() => setIsModalOpen(true)} // Open the modal
+                        className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300"
+                    >
+                        Create Shared Wishlist
+                    </button>
+                </div> */}
+                
+                {/* <CreateSharedWishlistModel
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onSubmit={handleCreateSharedWishlist}
+                /> */}
+
                 <h2 className="text-3xl font-bold text-center text-blue-600 mb-4">
-                    Your Personal Wishlist
+                    Wishlist
                 </h2>
                 {error ? (
                     <div className="text-red-500">Error: {error}</div>
@@ -130,6 +226,7 @@ function ProfilePage() {
                     </div>
                 )}
             </div>
+
         </div>
     );
 }
