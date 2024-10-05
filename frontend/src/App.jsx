@@ -22,15 +22,17 @@ import Logout from './components/user_management/Logout';
 import AddToWishlist from './components/wishlist_management/AddToWishlist';
 import RemoveFromWishlist from './components/wishlist_management/RemoveFromWishlist';
 
+
+
 function App() {
   const isAuthenticated = UserService.isAuthenticated();
   const isAdmin = UserService.isAdmin();
 
   return (
     <Router>
-      <div className="App flex min-h-screen">
+      <div className="flex min-h-screen App">
         <Sidebar />
-        <div className="flex-1 flex flex-col ml-64"> {/* Add margin left to accommodate the sidebar */}
+        <div className="flex flex-col flex-1 ml-64"> {/* Add margin left to accommodate the sidebar */}
           <Header />
           <QuantityProvider>
             <div className="flex-grow">
@@ -58,6 +60,14 @@ function App() {
                 <Route path="/home" element={<HomeShopping />} />
                 <Route path="/item/:id" element={<ItemDetails />} />
 
+
+                <Route path="/inventry2" element={<Navigate to="/inventry" />} />
+                <Route path="/inventry" element={<InventryDetails />} />
+                <Route path="/warrenty/:id" element={<WarrentyClame />} />
+                <Route path="/warranty-form/:id" element={<WarrentyClamForm />} />
+                <Route path="/warranty-claim-form/:id" element={<UpdateWarrentyClaim />} />
+                <Route path="/warranty-claim" element={<ManageWarrentyClaims />} />
+                
                 <Route path="*" element={<Navigate to="/login" />} />
               </Routes>
             </div>
@@ -65,8 +75,8 @@ function App() {
           <Footer />
         </div>
       </div>
-    </Router>
-  );
+      </Router>
+      );
 }
 
-export default App;
+      export default App;
