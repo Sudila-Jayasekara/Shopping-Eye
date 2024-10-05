@@ -1,7 +1,7 @@
-import { useState, useEffect, useContext } from 'react'; // Added useContext import
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
-import { getAllItems } from './InventoryService'; // Assuming this is your API call for fetching items
-import { QuantityContext } from './QuantityContext'; // Import QuantityContext
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { getAllItems } from './InventoryService'; // Ensure you have this function implemented
+import SuggestedItems from './SuggestedItems'; // Import the SuggestedItems component
 
 const images = [
   'https://vudu-space.nyc3.cdn.digitaloceanspaces.com/studiox/general/_hero/014_2022-12-30-022753_uvza.jpg',
@@ -10,22 +10,24 @@ const images = [
   'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/10/59/ad/1b.jpg'
 ];
 
+const categories = ["All Items","Food", "Electronics", "Clothing", "Home Appliances", "Books", "Furniture", "Accessories"];
+
 const HomeShopping = () => {
   const [items, setItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredItems, setFilteredItems] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const { quantities } = useContext(QuantityContext); // Now useContext is imported correctly
+  const [activeCategory, setActiveCategory] = useState("All Items"); // New state to track the active category
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const data = await getAllItems();
-        if (Array.isArray(data)) {
-          setItems(data);
-          setFilteredItems(data);
+        const response = await getAllItems(); // Fetch items from API
+        if (Array.isArray(response)) {
+          setItems(response);
+          setFilteredItems(response); // Initialize filtered items
         } else {
-          console.error("Unexpected data format:", data);
+          console.error("Unexpected data format:", response);
         }
       } catch (error) {
         console.error("Error fetching items:", error);
@@ -34,20 +36,34 @@ const HomeShopping = () => {
     fetchItems();
   }, []);
 
+  // Input handler for search query
   const handleInputChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
+  // Function to filter by category
+  const filterByCategory = (category) => {
+    setActiveCategory(category);
+    if (category === "All Items") {
+      setFilteredItems(items);
+    } else {
+      const filtered = items.filter(item => item.category && item.category.toLowerCase() === category.toLowerCase());
+      setFilteredItems(filtered);
+    }
+  };
+
+  // Update filtered items based on search query
   useEffect(() => {
     const query = searchQuery.toLowerCase();
     const filtered = items.filter(item =>
-      item.category.toLowerCase().includes(query) ||
-      item.name.toLowerCase().includes(query) ||
-      (item.shop && item.shop.toLowerCase().includes(query))
+      (item.category && item.category.toLowerCase().includes(query)) || // Check if category is defined
+      (item.name && item.name.toLowerCase().includes(query)) || // Check if name is defined
+      (item.shop && item.shop.toLowerCase().includes(query)) // Check if shop is defined
     );
     setFilteredItems(filtered);
   }, [searchQuery, items]);
 
+  // Carousel image rotation
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -70,7 +86,7 @@ const HomeShopping = () => {
         {/* Overlay for Search Bar & Tagline */}
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-center">
           <h2 className="text-4xl font-playfair font-bold text-white mb-4">Welcome to Shopping Eye Mall</h2>
-          <p className="text-lg font-lora text-white mb-6">"Your One-Stop Shop for Everything!"</p>
+          <p className="text-lg font-lora text-white mb-6">"One-stop online solution for everything"</p>
           <div className="w-full max-w-md">
             <input
               type="text"
@@ -84,6 +100,21 @@ const HomeShopping = () => {
         </div>
       </div>
 
+      {/* Category Filter Bar */}
+      <div className="flex justify-center mb-6">
+        {categories.map((category) => (
+          <button
+            key={category}
+            className={`px-4 py-2 mx-2 rounded-full ${
+              activeCategory === category ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'
+            }`}
+            onClick={() => filterByCategory(category)}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+
       {/* Items Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {filteredItems.length > 0 ? (
@@ -94,13 +125,22 @@ const HomeShopping = () => {
                 <img src={item.imageUrl} alt={item.name} className="mb-4 w-full h-48 object-cover rounded" />
               )}
               <div className="mb-2">
-                <p className="text-2xl font-bold text-grey-400">Rs. {item.price.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-gray-400">Rs. {item.price.toFixed(2)}</p>
               </div>
               <div className="mb-2">
-                <p className="text-xl">Quantity: {quantities[item.id] || 0}</p> {/* Display quantity */}
+                {item.quantity === 0 ? (
+                  <p className="text-xl text-red-500 font-bold">Out of Stock</p>
+                ) : (
+                  <p className="text-xl">Current Quantity: {item.quantity}</p>
+                )}
               </div>
               <div className="flex justify-between items-center mt-4">
-                <Link to={`/item/${item.id}`} className="bg-white text-gray-800 px-3 py-1 rounded text-center block">View Details</Link>
+                <Link to={`/item/${item.id}`} className="bg-white text-gray-800 px-3 py-1 rounded text-center block">
+                  View Details
+                </Link>
+                <button className="bg-blue-500 text-white px-3 py-1 rounded text-center">
+                  Add to Cart
+                </button>
                 <a
                   href="#"
                   className="text-white hover:text-dark-red transition-colors duration-300 text-2xl ml-4"
@@ -115,13 +155,18 @@ const HomeShopping = () => {
         )}
       </div>
 
+      {/* Suggested Items Section */}
+      <SuggestedItems currentItemId={null} /> {/* Pass null or appropriate ID for suggested items */}
+
       {/* Inline CSS for Mask Gradient */}
-      <style jsx>{`
-        .mask-gradient {
-          mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
-          -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
-        }
-      `}</style>
+      <style>
+        {`
+          .mask-gradient {
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
+          }
+        `}
+      </style>
     </div>
   );
 };

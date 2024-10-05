@@ -9,6 +9,7 @@ import ProfilePage from './components/user_management/ProfilePage';
 import PaymentForm from './components/order_process_management/PaymentForm';
 import AdminPaymentView from './components/order_process_management/AdminPaymentView';
 
+import InventoryReport from './components/inventory_management/InventoryReport';
 import ItemForm from './components/inventory_management/itemForm';
 import Inventory from './components/inventory_management/Inventory';
 import HomeShopping from './components/inventory_management/HomeShopping';
@@ -52,6 +53,7 @@ function App() {
               <Route path="/create-item" element={<ItemForm />} />
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/home" element={<HomeShopping />} />
+              <Route path="/inventory-report" element={<InventoryReport />} />
               <Route path="/item/:id" element={<ItemDetails />} />
               
               {/* Redirect all other routes to login */}

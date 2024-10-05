@@ -5,8 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eed9a2c2-816b-448c-8d22-3488ed6e20d9" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/HomeSopping.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/HomeSopping.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/example/demo/controller/ItemListingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/example/demo/controller/ItemListingController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/inventory_management/HomeShopping.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/inventory_management/HomeShopping.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/inventory_management/InventoryService.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/inventory_management/InventoryService.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/inventory_management/ItemDetails.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/inventory_management/ItemDetails.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/inventory_management/QuantityContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/inventory_management/QuantityContext.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/inventory_management/itemForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/inventory_management/itemForm.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,21 +34,21 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "HimeshaSenaratne"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;HimeshaSenaratne&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Sudila-Jayasekara/Shopping-Eye.git",
-    "accountId": "6fae6068-bfee-45a5-9af8-0e49345c3028"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Sudila-Jayasekara/Shopping-Eye.git&quot;,
+    &quot;accountId&quot;: &quot;6fae6068-bfee-45a5-9af8-0e49345c3028&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2lNx5McWGC7Alb8zyXknQAwfvg5" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -57,7 +62,7 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Spring Boot.DemoApplication.executor": "Run",
-    "git-widget-placeholder": "Shop-Management-and-Inventory-Control",
+    "git-widget-placeholder": "DevHimesha",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/senar_lvhax48/OneDrive/Desktop/NewShoppingEye/Shopping-Eye/backend",
     "node.js.detected.package.eslint": "true",
@@ -94,6 +99,7 @@
       <option name="presentableId" value="Default" />
       <updated>1725034150392</updated>
       <workItem from="1725034151550" duration="38888000" />
+      <workItem from="1728124497621" duration="121000" />
     </task>
     <servers />
   </component>

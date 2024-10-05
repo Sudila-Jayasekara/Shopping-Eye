@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Global API configuration
-const API_URL = 'http://localhost:1010/api/items';
+const API_URL = 'http://localhost:1010/public/items';
 const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/diejjxqts/image/upload'; // Your Cloudinary URL
 const UPLOAD_PRESET = 'estate'; // Your Cloudinary upload preset
 
@@ -66,6 +66,17 @@ export const updateItem = async (id, updatedItem) => {
         return response.data; // Return updated item data
     } catch (error) {
         console.error(`Error updating the item with ID ${id}:`, error.response?.data || error.message);
+        throw error;
+    }
+};
+
+// Function to update the quantity of an item in the backend
+export const updateItemQuantity = async (id, quantity) => {
+    try {
+        const response = await axios.put(`${API_URL}/${id}/quantity`, { quantity });
+        return response.data; // Return updated item data
+    } catch (error) {
+        console.error(`Error updating the item quantity with ID ${id}:`, error.response?.data || error.message);
         throw error;
     }
 };

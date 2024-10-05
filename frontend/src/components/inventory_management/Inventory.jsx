@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getAllItems, deleteItem, updateItem } from './InventoryService'; // Ensure these API methods are correctly implemented
+import { useNavigate } from 'react-router-dom';
 
 const Inventory = () => {
     const [items, setItems] = useState([]);
@@ -7,6 +8,8 @@ const Inventory = () => {
     const [formData, setFormData] = useState({ name: '', price: '', quantity: '', description: '', category: '' });
     const [successMessage, setSuccessMessage] = useState(''); // State for success messages
 
+    const navigate = useNavigate();
+    
     useEffect(() => {
         const fetchItems = async () => {
             try {
@@ -43,6 +46,11 @@ const Inventory = () => {
         setFormData({ ...formData, [name]: value });
     };
 
+    // Handle "Analyze" button click
+    const handleAnalyzeClick = () => {
+        navigate('/inventory-report'); // Navigate to the report page
+    };
+
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -60,6 +68,9 @@ const Inventory = () => {
 
     // Calculate total quantity
     const totalQuantity = items.reduce((total, item) => total + (item.quantity || 0), 0);
+
+    // Check for items that need restocking
+    const itemsNeedingRestock = items.filter(item => item.quantity < 20);
 
     return (
         <div className="min-h-screen text-gray-200 p-6">
@@ -92,7 +103,10 @@ const Inventory = () => {
                     <tbody>
                         {items.length > 0 ? (
                             items.map((item) => (
-                                <tr key={item.id}>
+                                <tr 
+                                    key={item.id}
+                                    className={item.quantity < 5 ? 'bg-red-500 text-white' : ''} // Highlight row if quantity is less than 5
+                                >
                                     <td className="px-4 py-2 border-b border-gray-600">{item.name}</td>
                                     <td className="px-4 py-2 border-b border-gray-600">{item.price}</td>
                                     <td className="px-4 py-2 border-b border-gray-600">{item.quantity}</td>
@@ -179,8 +193,23 @@ const Inventory = () => {
                                 required
                             />
                         </div>
-                        <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">Update Item</button>
+                        <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded">Update Item</button>
                     </form>
+                </div>
+            )}
+
+            {/* Analyze button */}
+            <button onClick={handleAnalyzeClick} className="mt-6 px-4 py-2 bg-yellow-500 text-white rounded">Analyze</button>
+
+            {/* Display message for items needing restocking */}
+            {itemsNeedingRestock.length > 0 && (
+                <div className="mt-6 p-4 bg-red-700 text-white rounded-lg">
+                    <h4 className="font-bold">Restock Needed!</h4>
+                    <ul>
+                        {itemsNeedingRestock.map(item => (
+                            <li key={item.id}>{item.name}: Only {item.quantity} left</li>
+                        ))}
+                    </ul>
                 </div>
             )}
         </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createItem } from './InventoryService'; // Ensure this path is correct
+import { createItem, uploadImage } from './InventoryService'; // Ensure this path is correct
 
 const ItemForm = () => {
     const [name, setName] = useState('');
@@ -11,7 +11,7 @@ const ItemForm = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState(''); // State for error message
 
-    const categories = ['Food', 'Electronics', 'Clothing', 'Home Appliances', 'Books', 'Furniture'];
+    const categories = ['Food', 'Electronics', 'Clothing', 'Home Appliances', 'Books', 'Furniture', 'Accessories'];
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
