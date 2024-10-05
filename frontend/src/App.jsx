@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from './components/user_management/LoginPage';
 import RegistrationPage from './components/user_management/RegistrationPage';
@@ -12,6 +12,7 @@ import ItemForm from './components/inventory_management/itemForm';
 import Inventory from './components/inventory_management/Inventory';
 import HomeShopping from './components/inventory_management/HomeShopping';
 import ItemDetails from './components/inventory_management/ItemDetails';
+import ShoppingCart from "./components/order_process_management/ShoppingCart";
 import { QuantityProvider } from './components/inventory_management/QuantityContext';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import Header from './Header';
@@ -57,6 +58,10 @@ function App() {
                 <Route path="/inventory" element={<Inventory />} />
                 <Route path="/home" element={<HomeShopping />} />
                 <Route path="/item/:id" element={<ItemDetails />} />
+
+                <Route path="/payment" element={<PaymentForm />} />
+                <Route path="/admin/payments" element={<AdminPaymentView />} />
+                <Route path="/cart" element={<ShoppingCart />} />
 
                 <Route path="*" element={<Navigate to="/login" />} />
               </Routes>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getAllItems, deleteItem, updateItem } from './InventoryService'; // Ensure these API methods are correctly implemented
+import { getAllItems, deleteItem, updateItem } from './api'; // Ensure these API methods are correctly implemented
 
 const Inventory = () => {
     const [items, setItems] = useState([]);
@@ -28,8 +28,10 @@ const Inventory = () => {
     const handleDeleteClick = async (itemId) => {
         try {
             console.log(`Attempting to delete item with ID: ${itemId}`);
+
             await deleteItem(itemId); // Call the delete API method
             console.log(`Successfully deleted item with ID: ${itemId}`);
+
             setItems(items.filter(item => item.id !== itemId)); // Update state to remove the item
             setSuccessMessage('Item successfully deleted.'); // Set success message
             setTimeout(() => setSuccessMessage(''), 3000); // Clear success message after 3 seconds
