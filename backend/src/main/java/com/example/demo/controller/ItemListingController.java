@@ -39,11 +39,24 @@ public class ItemListingController {
             updatedItem.setQuantity(itemListingDetails.getQuantity());
             updatedItem.setDescription(itemListingDetails.getDescription());
             updatedItem.setCategory(itemListingDetails.getCategory());
+            updatedItem.setImageUrl(itemListingDetails.getImageUrl()); // Update image URL
             return ResponseEntity.ok(itemListingService.saveItem(updatedItem));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+    @PutMapping("/{id}/quantity")
+    public ResponseEntity<ItemListing> updateItemQuantity(@PathVariable Long id, @RequestBody QuantityUpdateRequest request) {
+        Optional<ItemListing> existingItem = itemListingService.getItemById(id);
+        if (existingItem.isPresent()) {
+            ItemListing itemToUpdate = existingItem.get();
+            itemToUpdate.setQuantity(request.getQuantity());
+            return ResponseEntity.ok(itemListingService.saveItem(itemToUpdate));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
