@@ -118,34 +118,45 @@ function ProfilePage() {
         <div className="min-h-screen flex bg-gray-100 py-4">
             {/* Profile Information Section */}
             <div className="w-4/6 flex-grow bg-white rounded-lg shadow-lg p-8 m-4">
-                <h2 className="text-3xl font-bold text-center text-blue-600 mb-4">
-                    Profile Information
-                </h2>
-                {/* Profile Picture */}
-                <div className="flex justify-center">
-                    <img
-                        src={profileInfo.imageUrl || 'default-profile-pic.png'}
-                        alt="Profile"
-                        className="w-32 h-32 rounded-full border-2 border-blue-600 object-cover shadow-lg"
-                    />
-                </div>
-                <div className="text-gray-700">
-                    <p className="mb-2"><span className="font-bold">Name:</span> {profileInfo.name}</p>
-                    <p className="mb-2"><span className="font-bold">Email:</span> {profileInfo.email}</p>
-                    <p className="mb-2"><span className="font-bold">City:</span> {profileInfo.city}</p>
-                </div>
+  <h2 className="text-3xl font-bold text-center text-blue-600 mb-4">
+    Profile Information
+  </h2>
+  
+  {/* Profile Picture */}
+  <div className="flex justify-center mb-10">
+    <img
+      src={profileInfo.imageUrl || 'default-profile-pic.png'}
+      alt="Profile"
+      className="w-40 h-40 rounded-full border-4 border-blue-600 object-cover shadow-lg"
+    />
+  </div>
+  
+  {/* User Details */}
+  <div className="text-gray-700">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <p className="mb-2"><span className="font-bold">Name:</span> {profileInfo.name}</p>
+      <p className="mb-2"><span className="font-bold">Email:</span> {profileInfo.email}</p>
+      <p className="mb-2"><span className="font-bold">Role:</span> {profileInfo.role}</p>
+      <p className="mb-2"><span className="font-bold">Date of Birth:</span> {profileInfo.dob}</p>
+      <p className="mb-2"><span className="font-bold">Gender:</span> {profileInfo.gender}</p>
+      <p className="mb-2"><span className="font-bold">Phone:</span> {profileInfo.phone}</p>
+      <p className="mb-2"><span className="font-bold">Address:</span> {profileInfo.address}</p>
+    </div>
+  </div>
 
-                <div className="mt-6 flex justify-center space-x-4">
-                    <Link to={`/update-user/${profileInfo.id}`} className="inline-block bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        Update This Profile
-                    </Link>
-                    {profileInfo?.role === "ADMIN" && (
-                        <Link to="/admin/user-management" className="inline-block bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-                            Manage Users
-                        </Link>
-                    )}
-                </div>
-            </div>
+  {/* Action Buttons */}
+  <div className="mt-6 flex justify-center space-x-4">
+    <Link to={`/update-user/${profileInfo.id}`} className="inline-block bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out">
+      Update This Profile
+    </Link>
+    {profileInfo?.role === "ADMIN" && (
+      <Link to="/admin/user-management" className="inline-block bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200 ease-in-out">
+        Manage Users
+      </Link>
+    )}
+  </div>
+</div>
+
 
             {/* Wishlist Section */}
             <div className="w-2/6 flex-grow bg-white rounded-lg shadow-lg p-8 m-4 max-h-screen overflow-y-auto">
