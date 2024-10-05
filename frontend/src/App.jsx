@@ -78,7 +78,6 @@ function App() {
                 <Route path="/warranty-claim" element={<ManageWarrentyClaims />} />
 
 
-
                 <Route path="*" element={<Navigate to="/login" />} />
               </Routes>
             </div>
