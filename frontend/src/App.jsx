@@ -70,12 +70,12 @@ function App() {
 
 
                 <Route path="/" element={<Navigate to="/inventry" />} />
-        <Route path="/inventry" element={<InventryDetails />} />
-        <Route path="/warrenty/:id" element={<WarrentyClame />} />
+                <Route path="/inventry" element={<InventryDetails />} />
+                <Route path="/warrenty/:id" element={<WarrentyClame />} />
 
-        <Route path="/warranty-form/:id" element={<WarrentyClamForm />} />
-        <Route path="/warranty-claim-form/:id" element={<UpdateWarrentyClaim />} />
-        <Route path="/warranty-claim" element={<ManageWarrentyClaims />} />
+                <Route path="/warranty-form/:id" element={<WarrentyClamForm />} />
+                <Route path="/warranty-claim-form/:id" element={<UpdateWarrentyClaim />} />
+                <Route path="/warranty-claim" element={<ManageWarrentyClaims />} />
 
 
 
