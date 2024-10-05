@@ -21,7 +21,7 @@ function UpdateWarrentyClaim() {
     // Fetch the claim data when the component mounts
     const fetchClaim = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/warranty-claims/${id}`);
+        const response = await axios.get(`http://localhost:1010/public/warranty-claims/${id}`);
         setClaim(response.data);
       } catch (err) {
         setError('Failed to fetch warranty claim');
@@ -42,7 +42,7 @@ function UpdateWarrentyClaim() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:8080/api/warranty-claims/${id}`, claim);
+      await axios.put(`http://localhost:1010/public/warranty-claims/${id}`, claim);
       navigate('/warranty-claim'); // Navigate back to the list after update
     } catch (err) {
       setError('Failed to update warranty claim');

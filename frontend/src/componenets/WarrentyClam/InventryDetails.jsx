@@ -8,7 +8,7 @@ function InventryDetails() {
   const [inventories, setInventories] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/inventry/all')
+    axios.get('http://localhost:1010/public/inventry/all')
       .then(response => {
         setInventories(response.data);
       })

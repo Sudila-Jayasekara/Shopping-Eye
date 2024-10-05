@@ -11,7 +11,7 @@ function WarrentyClame() {
   const [remainingTime, setRemainingTime] = useState({});
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/inventry/${id}`)
+    axios.get(`http://localhost:1010/public/inventry/${id}`)
       .then(response => {
         const data = response.data;
         setInventory(data);

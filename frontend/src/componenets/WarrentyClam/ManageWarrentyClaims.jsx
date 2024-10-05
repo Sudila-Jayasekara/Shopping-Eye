@@ -17,7 +17,7 @@ function ManageWarrentyClaims() {
 
   const fetchWarrantyClaims = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/warranty-claims');
+      const response = await axios.get('http://localhost:1010/public/warranty-claims');
       setWarrantyClaims(response.data);
       setLoading(false);
     } catch (err) {
@@ -28,7 +28,7 @@ function ManageWarrentyClaims() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/api/warranty-claims/${id}`);
+      await axios.delete(`http://localhost:1010/public/warranty-claims/${id}`);
       setWarrantyClaims(warrantyClaims.filter(claim => claim.id !== id));
     } catch (err) {
       setError('Failed to delete warranty claim');

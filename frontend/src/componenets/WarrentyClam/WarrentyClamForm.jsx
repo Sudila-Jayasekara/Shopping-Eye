@@ -14,7 +14,7 @@ function WarrentyClamForm() {
   });
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/inventry/${id}`)
+    axios.get(`http://localhost:1010/public/inventry/${id}`)
       .then(response => {
         const data = response.data;
         setInventory(data);
@@ -41,7 +41,7 @@ function WarrentyClamForm() {
     e.preventDefault();
 
     // Get suggested solution from the AI service
-    axios.post('http://localhost:8080/api/predict-solution', { issue: formData.issue })
+    axios.post('http://localhost:1010/public/predict-solution', { issue: formData.issue })
       .then(response => {
         const solution = response.data.solution;
 
@@ -52,7 +52,7 @@ function WarrentyClamForm() {
         }));
 
         // Submit the warranty claim
-        axios.post('http://localhost:8080/api/warranty-claims', formData)
+        axios.post('http://localhost:1010/public/warranty-claims', formData)
           .then(response => {
             console.log('Warranty claim submitted:', response.data);
             // Redirect or show success message
