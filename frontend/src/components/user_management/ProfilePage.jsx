@@ -7,7 +7,7 @@ import CreateSharedWishlistModel from '../wishlist_management/Shared/CreateShare
 import { createSharedWishlist } from '../wishlist_management/Shared/SharedWishlistService'; // Import the service function for creating shared wishlist
 import { getSharedWishlistsByUserId } from '../wishlist_management/Shared/SharedWishlistService'; // Import the service function for fetching shared wishlists
 import { addMemberToSharedWishlist } from '../wishlist_management/Shared/SharedWishlistService'; // Import the service function for adding a member to a shared wishlist
- 
+
 function ProfilePage() {
     const [profileInfo, setProfileInfo] = useState({});
     const [wishlist, setWishlist] = useState([]);
@@ -66,7 +66,7 @@ function ProfilePage() {
                 const user = await UserService.getUserByToken(token);
                 const userId = user.ourUsers.id;
                 const sharedData = await getSharedWishlistsByUserId(userId, token); // Fetch shared wishlists
-    
+
                 setSharedWishlists(sharedData); // Update state with shared wishlists
             } catch (err) {
                 setError(err.message);
@@ -75,34 +75,34 @@ function ProfilePage() {
             setError('Token is missing');
         }
     };
-    
+
     // const handleCreateSharedWishlist = async ({ name, memberEmail }) => {
     //     try {
     //         const token = localStorage.getItem('token');
     //         const ownerId = profileInfo.id; // Assuming profileInfo contains the current user's ID
-    
+
     //         // Prepare the wishlist data according to the backend's requirement
     //         const wishlistData = {
     //             name,
     //             owner: { id: ownerId } // Correctly structure the owner object
     //         };
-    
+
     //         // Call the API to create the shared wishlist
     //         const newWishlist = await createSharedWishlist(wishlistData, token);
-            
+
     //         console.log('Shared Wishlist Created:', newWishlist);
-            
+
     //         // Extract the wishlist ID from the newly created wishlist
     //         const wishlistId = newWishlist.id; // Ensure this matches your actual structure
-            
+
     //         // Prepare the member data based on the provided email
     //         const memberData = { email: memberEmail };
-    
+
     //         // Call the API to add the member to the newly created shared wishlist
     //         const updatedWishlist = await addMemberToSharedWishlist(wishlistId, memberData, token);
-            
+
     //         console.log(`Member ${memberEmail} added to wishlist ${wishlistId}.`, updatedWishlist);
-    
+
     //         // Update the state with the new wishlist
     //         setSharedWishlists((prev) => [...prev, newWishlist]); // Update sharedWishlists state
     //         setIsModalOpen(false); // Close the modal after creation
@@ -111,8 +111,8 @@ function ProfilePage() {
     //         setError('Failed to create shared wishlist or add member.'); // Handle errors appropriately
     //     }
     // };
-    
-    
+
+
 
     return (
         <div className="min-h-screen flex bg-gray-100 py-4">
@@ -121,35 +121,46 @@ function ProfilePage() {
                 <h2 className="text-3xl font-bold text-center text-blue-600 mb-4">
                     Profile Information
                 </h2>
+
                 {/* Profile Picture */}
-                <div className="flex justify-center">
+                <div className="flex justify-center mb-10">
                     <img
                         src={profileInfo.imageUrl || 'default-profile-pic.png'}
                         alt="Profile"
-                        className="w-32 h-32 rounded-full border-2 border-blue-600 object-cover shadow-lg"
+                        className="w-40 h-40 rounded-full border-4 border-blue-600 object-cover shadow-lg"
                     />
                 </div>
+
+                {/* User Details */}
                 <div className="text-gray-700">
-                    <p className="mb-2"><span className="font-bold">Name:</span> {profileInfo.name}</p>
-                    <p className="mb-2"><span className="font-bold">Email:</span> {profileInfo.email}</p>
-                    <p className="mb-2"><span className="font-bold">City:</span> {profileInfo.city}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <p className="mb-2"><span className="font-bold">Name:</span> {profileInfo.name}</p>
+                        <p className="mb-2"><span className="font-bold">Email:</span> {profileInfo.email}</p>
+                        <p className="mb-2"><span className="font-bold">Role:</span> {profileInfo.role}</p>
+                        <p className="mb-2"><span className="font-bold">Date of Birth:</span> {profileInfo.dob}</p>
+                        <p className="mb-2"><span className="font-bold">Gender:</span> {profileInfo.gender}</p>
+                        <p className="mb-2"><span className="font-bold">Phone:</span> {profileInfo.phone}</p>
+                        <p className="mb-2"><span className="font-bold">Address:</span> {profileInfo.address}</p>
+                    </div>
                 </div>
 
+                {/* Action Buttons */}
                 <div className="mt-6 flex justify-center space-x-4">
-                    <Link to={`/update-user/${profileInfo.id}`} className="inline-block bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <Link to={`/update-user/${profileInfo.id}`} className="inline-block bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out">
                         Update This Profile
                     </Link>
                     {profileInfo?.role === "ADMIN" && (
-                        <Link to="/admin/user-management" className="inline-block bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <Link to="/admin/user-management" className="inline-block bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200 ease-in-out">
                             Manage Users
                         </Link>
                     )}
                 </div>
             </div>
 
+
             {/* Wishlist Section */}
             <div className="w-2/6 flex-grow bg-white rounded-lg shadow-lg p-8 m-4 max-h-screen overflow-y-auto">
-                
+
                 {/* <h2 className="text-3xl font-bold text-center text-blue-600 mb-4">
                     Shared Wishlists
                 </h2>
@@ -176,7 +187,7 @@ function ProfilePage() {
                         Create Shared Wishlist
                     </button>
                 </div> */}
-                
+
                 {/* <CreateSharedWishlistModel
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}

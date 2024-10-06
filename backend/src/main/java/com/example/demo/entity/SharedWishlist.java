@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,12 +19,19 @@ public class SharedWishlist {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String sharedWishlistName;
 
+    @ElementCollection
+    @CollectionTable(name = "shared_wishlist_items", joinColumns = @JoinColumn(name = "wishlist_id"))
+    @Column(name = "item_id")
+    private Set<Long> itemIds = new HashSet<>();
+
+    // Owner of the shared wishlist
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private OurUsers owner;
 
+    // Members who can access the shared wishlist
     @ManyToMany
     @JoinTable(
             name = "shared_wishlist_members",
@@ -32,25 +40,21 @@ public class SharedWishlist {
     )
     private Set<OurUsers> members = new HashSet<>();
 
-    @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<SharedWishlistItem> items = new HashSet<>();
-
-    // Methods to manage members and items
-    public void addMember(OurUsers member) {
-        members.add(member);
+    // Methods to manage item IDs
+    public void addItem(Long itemId) {
+        itemIds.add(itemId);
     }
 
-    public void removeMember(OurUsers member) {
-        members.remove(member);
+    public void removeItem(Long itemId) {
+        itemIds.remove(itemId);
     }
 
-    public void addItem(SharedWishlistItem item) {
-        items.add(item);
-        item.setWishlist(this);
+    // Methods to manage members
+    public void addMember(OurUsers user) {
+        members.add(user);
     }
 
-    public void removeItem(SharedWishlistItem item) {
-        items.remove(item);
-        item.setWishlist(null);
+    public void removeMember(OurUsers user) {
+        members.remove(user);
     }
 }

@@ -1,71 +1,119 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.SharedWishlistDTO; // Import your SharedWishlistDTO
 import com.example.demo.entity.OurUsers;
-import com.example.demo.entity.SharedWishlist;
-import com.example.demo.entity.SharedWishlistItem;
-import com.example.demo.repository.SharedWishlistRepository;
-import com.example.demo.repository.SharedWishlistItemRepository;
-import com.example.demo.repository.UsersRepo;
+import com.example.demo.entity.SharedWishlist;  // Import your SharedWishlist entity
+import com.example.demo.repository.SharedWishlistRepository;  // Import your SharedWishlist repository
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class SharedWishlistService {
+    @Autowired
+    private SharedWishlistRepository sharedWishlistRepository;  // Use SharedWishlistRepository
 
     @Autowired
-    private SharedWishlistRepository sharedWishlistRepository;
+    private UsersManagementService usersManagementService;
 
-    @Autowired
-    private SharedWishlistItemRepository sharedWishlistItemRepository;
-
-    @Autowired
-    private UsersRepo ourUsersRepository;
-
-    public SharedWishlist createWishlist(SharedWishlist wishlist) {
-        return sharedWishlistRepository.save(wishlist);
+    public ResponseEntity<SharedWishlist> getSharedWishlistById(Long id) {
+        Optional<SharedWishlist> sharedWishlist = sharedWishlistRepository.findById(id);
+        return sharedWishlist.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    public Optional<SharedWishlist> getWishlist(Long id) {
-        return sharedWishlistRepository.findById(id);
+    public ResponseEntity<SharedWishlist> saveSharedWishlist(SharedWishlistDTO sharedWishlistDTO) {
+        OurUsers owner = usersManagementService.getUsersById(sharedWishlistDTO.getOwnerId()).getOurUsers();  // Get owner object
+        if (owner == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);  // Handle case if owner not found
+        }
+
+        SharedWishlist sharedWishlist = new SharedWishlist();
+        sharedWishlist.setOwner(owner);  // Set the owner object
+        sharedWishlist.setSharedWishlistName(sharedWishlistDTO.getSharedWishlistName());  // Set the name of the wishlist
+        sharedWishlist.setItemIds(new HashSet<>(sharedWishlistDTO.getItemIds()));  // Initialize item IDs from DTO
+
+        // Initialize members list if necessary
+        sharedWishlist.setMembers(new HashSet<>());  // Initialize members list
+        for (Long memberId : sharedWishlistDTO.getMemberIds()) {
+            OurUsers member = usersManagementService.getUsersById(memberId).getOurUsers();  // Get user object
+            if (member != null) {
+                sharedWishlist.addMember(member);  // Add member if valid
+            }
+        }
+
+        SharedWishlist savedSharedWishlist = sharedWishlistRepository.save(sharedWishlist);
+        return new ResponseEntity<>(savedSharedWishlist, HttpStatus.CREATED);
     }
 
-    public void deleteWishlist(Long id) {
-        sharedWishlistRepository.deleteById(id);
+    public ResponseEntity<Void> deleteSharedWishlist(Long id) {
+        Optional<SharedWishlist> sharedWishlistOptional = sharedWishlistRepository.findById(id);
+        if (sharedWishlistOptional.isPresent()) {
+            sharedWishlistRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public SharedWishlist addItemToWishlist(Long wishlistId, SharedWishlistItem item) {
-        SharedWishlist wishlist = sharedWishlistRepository.findById(wishlistId).orElseThrow();
-        wishlist.addItem(item);
-        sharedWishlistItemRepository.save(item);
-        return sharedWishlistRepository.save(wishlist);
+    public ResponseEntity<Void> addMemberToSharedWishlist(Long id, Long userId) {
+        Optional<SharedWishlist> sharedWishlistOptional = sharedWishlistRepository.findById(id);
+        if (sharedWishlistOptional.isPresent()) {
+            SharedWishlist sharedWishlist = sharedWishlistOptional.get();
+            OurUsers user = usersManagementService.getUsersById(userId).getOurUsers();
+            sharedWishlist.addMember(user);  // Add user ID to members
+            sharedWishlistRepository.save(sharedWishlist);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public SharedWishlist removeItemFromWishlist(Long wishlistId, Long itemId) {
-        SharedWishlist wishlist = sharedWishlistRepository.findById(wishlistId).orElseThrow();
-        SharedWishlistItem item = sharedWishlistItemRepository.findById(itemId).orElseThrow();
-        wishlist.removeItem(item);
-        sharedWishlistItemRepository.delete(item);
-        return sharedWishlistRepository.save(wishlist);
+    public ResponseEntity<Void> removeMemberFromSharedWishlist(Long id, Long userId) {
+        Optional<SharedWishlist> sharedWishlistOptional = sharedWishlistRepository.findById(id);
+        if (sharedWishlistOptional.isPresent()) {
+            SharedWishlist sharedWishlist = sharedWishlistOptional.get();
+            OurUsers user = usersManagementService.getUsersById(userId).getOurUsers();  // Fetch user object
+            if (user != null) {
+                sharedWishlist.removeMember(user);  // Use method to remove member
+                sharedWishlistRepository.save(sharedWishlist);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public Set<SharedWishlistItem> getItems(Long wishlistId) {
-        SharedWishlist wishlist = sharedWishlistRepository.findById(wishlistId).orElseThrow();
-        return wishlist.getItems();
+    public ResponseEntity<List<SharedWishlist>> getAllSharedWishlistsForUser(Long userId) {
+        OurUsers user = usersManagementService.getUsersById(userId).getOurUsers();  // Get the user object
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);  // Handle case if user not found
+        }
+        List<SharedWishlist> sharedWishlists = sharedWishlistRepository.findByMembersContaining(user);
+        return new ResponseEntity<>(sharedWishlists, HttpStatus.OK);
     }
 
-    public SharedWishlist addMemberToWishlist(Long wishlistId, OurUsers member) {
-        SharedWishlist wishlist = sharedWishlistRepository.findById(wishlistId).orElseThrow();
-        OurUsers user = ourUsersRepository.findById(member.getId()).orElseThrow();
-        wishlist.addMember(user);
-        return sharedWishlistRepository.save(wishlist);
+    public ResponseEntity<Void> addItemToSharedWishlist(Long id, Long itemId) {
+        Optional<SharedWishlist> sharedWishlistOptional = sharedWishlistRepository.findById(id);
+        if (sharedWishlistOptional.isPresent()) {
+            SharedWishlist sharedWishlist = sharedWishlistOptional.get();
+            sharedWishlist.addItem(itemId);  // Add item using the method
+            sharedWishlistRepository.save(sharedWishlist);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public List<SharedWishlist> getWishlistsByUserId(Long userId) {
-        return sharedWishlistRepository.findByOwnerId(userId); // Implement this in your repository
+    public ResponseEntity<Void> removeItemFromSharedWishlist(Long id, Long itemId) {
+        Optional<SharedWishlist> sharedWishlistOptional = sharedWishlistRepository.findById(id);
+        if (sharedWishlistOptional.isPresent()) {
+            SharedWishlist sharedWishlist = sharedWishlistOptional.get();
+            sharedWishlist.removeItem(itemId);  // Assuming removeItem is a method in SharedWishlist
+            sharedWishlistRepository.save(sharedWishlist);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
 }

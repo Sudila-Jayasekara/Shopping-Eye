@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faHeart, faInfoCircle, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faHeart, faShoppingCart, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 function Header() {
     const location = useLocation(); // Get the current location
@@ -30,10 +30,10 @@ function Header() {
                         </li>
                         <li>
                             <Link 
-                                to="/about" 
-                                className={`flex items-center hover:underline ${location.pathname === '/about' ? 'text-red-500' : 'text-white'}`}
+                                to="/cart" 
+                                className={`flex items-center hover:underline ${location.pathname === '/cart' ? 'text-red-500' : 'text-white'}`}
                             >
-                                <FontAwesomeIcon icon={faInfoCircle} className="mr-1" /> About
+                                <FontAwesomeIcon icon={faShoppingCart} className="mr-1" />Cart
                             </Link>
                         </li>
                         <li>

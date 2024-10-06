@@ -1,79 +1,58 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.OurUsers;
-import com.example.demo.entity.SharedWishlist;
-import com.example.demo.entity.SharedWishlistItem;
-import com.example.demo.service.SharedWishlistService;
+import com.example.demo.dto.SharedWishlistDTO; // Import the SharedWishlistDTO
+import com.example.demo.entity.SharedWishlist; // Import the SharedWishlist entity
+import com.example.demo.service.SharedWishlistService; // Import the SharedWishlist service
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
 @RestController
 @RequestMapping("/adminuser/shared-wishlist")
 public class SharedWishlistController {
-
     @Autowired
     private SharedWishlistService sharedWishlistService;
 
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<SharedWishlist>> getWishlistsByUserId(@PathVariable Long userId) {
-        List<SharedWishlist> wishlists = sharedWishlistService.getWishlistsByUserId(userId);
-        return wishlists.isEmpty() ? ResponseEntity.status(HttpStatus.NO_CONTENT).build() : ResponseEntity.ok(wishlists);
+    @PostMapping("/create")
+    public ResponseEntity<SharedWishlist> createSharedWishlist(@RequestBody SharedWishlistDTO sharedWishlistDTO) {
+        return sharedWishlistService.saveSharedWishlist(sharedWishlistDTO);
     }
 
-    @PostMapping
-    public ResponseEntity<SharedWishlist> createWishlist(@RequestBody SharedWishlist wishlist) {
-        try {
-            SharedWishlist createdWishlist = sharedWishlistService.createWishlist(wishlist);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdWishlist); // Use CREATED status
-        } catch (Exception e) {
-            // Log the error
-            System.err.println("Error creating wishlist: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Return an appropriate status code
-        }
+    @PutMapping("/{id}/add-item/{itemId}")
+    public ResponseEntity<Void> addItemToSharedWishlist(@PathVariable Long id, @PathVariable Long itemId) {
+        return sharedWishlistService.addItemToSharedWishlist(id, itemId);
     }
 
+    @DeleteMapping("/{id}/remove-item/{itemId}")
+    public ResponseEntity<Void> removeItemFromSharedWishlist(@PathVariable Long id, @PathVariable Long itemId) {
+        return sharedWishlistService.removeItemFromSharedWishlist(id, itemId);
+    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SharedWishlist> getWishlist(@PathVariable Long id) {
-        Optional<SharedWishlist> wishlist = sharedWishlistService.getWishlist(id);
-        return wishlist.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<SharedWishlist> getSharedWishlistById(@PathVariable Long id) {
+        return sharedWishlistService.getSharedWishlistById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWishlist(@PathVariable Long id) {
-        sharedWishlistService.deleteWishlist(id);
-        return ResponseEntity.noContent().build();
+    @PostMapping("/{id}/add-member/{userId}")
+    public ResponseEntity<Void> addMemberToSharedWishlist(@PathVariable Long id, @PathVariable Long userId) {
+        return sharedWishlistService.addMemberToSharedWishlist(id, userId);
     }
 
-    @PostMapping("/{wishlistId}/items")
-    public ResponseEntity<SharedWishlist> addItemToWishlist(@PathVariable Long wishlistId, @RequestBody SharedWishlistItem item) {
-        SharedWishlist updatedWishlist = sharedWishlistService.addItemToWishlist(wishlistId, item);
-        return ResponseEntity.ok(updatedWishlist);
+    @DeleteMapping("/{id}/remove-member/{userId}")
+    public ResponseEntity<Void> removeMemberFromSharedWishlist(@PathVariable Long id, @PathVariable Long userId) {
+        return sharedWishlistService.removeMemberFromSharedWishlist(id, userId);
     }
 
-    @DeleteMapping("/{wishlistId}/items/{itemId}")
-    public ResponseEntity<SharedWishlist> removeItemFromWishlist(@PathVariable Long wishlistId, @PathVariable Long itemId) {
-        SharedWishlist updatedWishlist = sharedWishlistService.removeItemFromWishlist(wishlistId, itemId);
-        return ResponseEntity.ok(updatedWishlist);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<SharedWishlist>> getAllSharedWishlistsForUser(@PathVariable Long userId) {
+        return sharedWishlistService.getAllSharedWishlistsForUser(userId);
     }
 
-    @GetMapping("/{wishlistId}/items")
-    public ResponseEntity<Set<SharedWishlistItem>> getItems(@PathVariable Long wishlistId) {
-        Set<SharedWishlistItem> items = sharedWishlistService.getItems(wishlistId);
-        return ResponseEntity.ok(items);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteSharedWishlist(@PathVariable Long id) {
+        return sharedWishlistService.deleteSharedWishlist(id);
     }
-
-    @PostMapping("/{wishlistId}/members")
-    public ResponseEntity<SharedWishlist> addMemberToWishlist(@PathVariable Long wishlistId, @RequestBody OurUsers member) {
-        SharedWishlist updatedWishlist = sharedWishlistService.addMemberToWishlist(wishlistId, member);
-        return ResponseEntity.ok(updatedWishlist);
-    }
-
 }
+
