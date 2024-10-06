@@ -3,6 +3,9 @@ import { getAllItems } from './InventoryService'; // Ensure this function is cor
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import jsPDF from 'jspdf';
+import logo from '../../logo.png';
+
+
 
 // Register required Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -55,36 +58,48 @@ const InventoryReport = () => {
         const doc = new jsPDF();
         const currentDate = new Date().toLocaleDateString();
         const currentTime = new Date().toLocaleTimeString();
-
-        // Company Name, Tagline, and Title
-        doc.setFontSize(18);
-        doc.text("Shopping Eye", 10, 10); // Company Name
-        doc.setFontSize(14);
-        doc.text("One-stop online solution for everything", 10, 18); // Tagline
-        doc.setFontSize(16);
-        doc.text("Inventory Report", 10, 30); // Title
-
-        // Horizontal Line
-        doc.line(10, 35, 200, 35);
-
-        // Date and Time on the Right
-        doc.setFontSize(12);
-        doc.text(`Date: ${currentDate}`, 150, 40);
-        doc.text(`Time: ${currentTime}`, 150, 45);
-
-        // Total Inventory
-        doc.setFontSize(12);
-        doc.text(`Total Inventory: ${totalInventory} units`, 10, 55);
-
-        // Inventory by Category with proper spacing
-        doc.text("Inventory by Category:", 10, 65);
-        categoryData.labels.forEach((label, index) => {
-            doc.text(`${label}: ${categoryData.values[index]} units`, 10, 75 + index * 10);
-        });
-
-        // Save the PDF
-        doc.save('inventory_report.pdf');
+    
+        // Load the image and add it to the PDF
+        const img = new Image();
+        img.src = logo; // The imported image
+    
+        img.onload = () => {
+            // Add the image to the left side
+            doc.addImage(img, 'PNG', 10, 10, 20, 20); // Adjust width and height as needed
+    
+            // Place the text next to the logo (starting at x=35 to give enough space for the image)
+            // Company Name, Tagline, and Title next to the logo
+            doc.setFontSize(18);
+            doc.text("Shopping Eye", 35, 15); // Adjust the Y-coordinate to align with the image
+            doc.setFontSize(14);
+            doc.text("One-stop online solution for everything", 35, 22); // Tagline next to the logo
+            doc.setFontSize(16);
+            doc.text("Inventory Report", 35, 30); // Title next to the logo
+    
+            // Horizontal Line below both the logo and text
+            doc.line(10, 40, 200, 40);
+    
+            // Date and Time on the Right
+            doc.setFontSize(12);
+            doc.text(`Date: ${currentDate}`, 150, 45);
+            doc.text(`Time: ${currentTime}`, 150, 50);
+    
+            // Total Inventory
+            doc.setFontSize(12);
+            doc.text(`Total Inventory: ${totalInventory} units`, 10, 60);
+    
+            // Inventory by Category with proper spacing
+            doc.text("Inventory by Category:", 10, 70);
+            categoryData.labels.forEach((label, index) => {
+                doc.text(`${label}: ${categoryData.values[index]} units`, 10, 80 + index * 10);
+            });
+    
+            // Save the PDF
+            doc.save('inventory_report.pdf');
+        };
     };
+    
+    
 
     return (
         <div className="min-h-screen text-gray-200 p-6">
@@ -99,7 +114,7 @@ const InventoryReport = () => {
                 <h3 className="text-xl font-bold mb-4">Inventory by Category</h3>
                 {/* Display the pie chart with smaller size */}
                 <div className="flex justify-center">
-                    <Pie data={pieData} height={100} width={100} /> {/* Adjusted size */}
+                    <Pie data={pieData} height={50} width={50} /> {/* Adjusted size */}
                 </div>
                 {/* Display category labels with quantities */}
                 <ul className="mt-4">
