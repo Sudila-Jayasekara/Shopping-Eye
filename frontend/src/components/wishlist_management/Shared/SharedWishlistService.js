@@ -82,11 +82,12 @@ export const removeItemFromSharedWishlist = async (id, itemId, token) => {
 // Function to add a member to a shared wishlist
 export const addMemberToSharedWishlist = async (id, userId, token) => {
     try {
-        await axios.post(`${BASE_URL}/${id}/add-member/${userId}`, null, {
+        const response = await axios.post(`${BASE_URL}/${id}/add-member/${userId}`, {}, {
             headers: { Authorization: `Bearer ${token}` },
         });
+        return response.data; // Return response data if needed
     } catch (error) {
-        console.error('Error adding member to shared wishlist:', error);
+        console.error('Error adding member to shared wishlist:', error.response ? error.response.data : error.message);
         throw error; // Re-throw the error to handle it in the calling component
     }
 };

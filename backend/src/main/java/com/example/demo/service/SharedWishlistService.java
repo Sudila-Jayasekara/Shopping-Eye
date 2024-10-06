@@ -29,17 +29,14 @@ public class SharedWishlistService {
         Optional<SharedWishlist> sharedWishlist = sharedWishlistRepository.findById(id);
         if (sharedWishlist.isPresent()) {
             List<OurUsers> members = new ArrayList<>(sharedWishlist.get().getMembers());
-            System.out.println("Shared wishlist found with ID: " + id);
-            System.out.println("Number of members in the wishlist: " + members.size());
-            for (OurUsers member : members) {
-                System.out.println("Member ID: " + member.getId() + ", Email: " + member.getEmail());
-            }
+            // Log or debug the size of members
+            System.out.println("Members found: " + members.size());
             return new ResponseEntity<>(members, HttpStatus.OK);
         } else {
-            System.out.println("Shared wishlist not found for ID: " + id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
 
 
 
