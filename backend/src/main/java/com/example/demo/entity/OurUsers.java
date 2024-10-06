@@ -35,6 +35,13 @@ public class OurUsers implements UserDetails {
     @JoinColumn(name = "wishlist_id", referencedColumnName = "id")
     private Wishlist wishlist;
 
+    // Updated field: Now references SharedWishlist
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL) // Owner of shared wishlists
+    private Set<SharedWishlist> sharedWishlists = new HashSet<>();
+
+    // New field to represent the shared wishlists this user is a member of
+    @ManyToMany(mappedBy = "members") // Members of shared wishlists
+    private Set<SharedWishlist> memberWishlists = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
