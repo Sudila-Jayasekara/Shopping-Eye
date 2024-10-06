@@ -35,11 +35,6 @@ public class OurUsers implements UserDetails {
     @JoinColumn(name = "wishlist_id", referencedColumnName = "id")
     private Wishlist wishlist;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<SharedWishlist> sharedWishlists = new HashSet<>();
-
-    @ManyToMany(mappedBy = "members")
-    private Set<SharedWishlist> memberOfWishlists = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
