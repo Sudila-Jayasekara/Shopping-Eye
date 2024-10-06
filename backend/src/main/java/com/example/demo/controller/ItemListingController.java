@@ -40,6 +40,7 @@ public class ItemListingController {
             updatedItem.setDescription(itemListingDetails.getDescription());
             updatedItem.setCategory(itemListingDetails.getCategory());
             updatedItem.setImageUrl(itemListingDetails.getImageUrl()); // Update image URL
+            updatedItem.setWarrantyTime(itemListingDetails.getWarrantyTime());
             return ResponseEntity.ok(itemListingService.saveItem(updatedItem));
         } else {
             return ResponseEntity.notFound().build();

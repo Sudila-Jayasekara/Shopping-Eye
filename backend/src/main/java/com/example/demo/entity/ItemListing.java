@@ -27,6 +27,7 @@ public class ItemListing implements Serializable {
     @Column(name = "image_url")
     private String imageUrl; // New field for image URL
 
+    private int warrantyTime;
     // Default constructor
     public ItemListing() {}
 
@@ -38,6 +39,7 @@ public class ItemListing implements Serializable {
         this.description = description;
         this.category = category;
         this.imageUrl = imageUrl;
+        this.warrantyTime=warrantyTime;
     }
 
     // Getters and Setters
@@ -95,5 +97,14 @@ public class ItemListing implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+
+    public int getWarrantyTime() {
+        return warrantyTime;
+    }
+
+    public void setWarrantyTime(int warrantyTime) {
+        this.warrantyTime = warrantyTime;
     }
 }

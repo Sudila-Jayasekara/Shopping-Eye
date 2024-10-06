@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/warranty-claims")
+@RequestMapping("/public/warranty-claims")
 public class WarrantyClaimController {
 
     @Autowired

@@ -2,6 +2,8 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "cart_items")
 public class CartItem {
@@ -19,6 +21,9 @@ public class CartItem {
 
     @Column(nullable = false)
     private Double itemTotalPrice;
+
+    @Column(nullable = false)
+    private LocalDate purchaseDay;
 
     // Default constructor
     public CartItem() {}
@@ -52,4 +57,11 @@ public class CartItem {
     public Double getItemTotalPrice() {
         return itemTotalPrice;
     }
+
+    public void setPurchaseDay(LocalDate purchaseDay) {
+        this.purchaseDay = purchaseDay;
+    }
+
+
+
 }
