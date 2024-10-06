@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 @Entity
 @Table(name = "ourusers")
 @Data
@@ -25,22 +24,19 @@ public class OurUsers implements UserDetails {
     private String role;
     private String imageUrl;
 
-    // New fields added for user details
-    private String dob;          // Date of Birth
-    private String gender;       // Gender
-    private String phone;        // Phone Number
-    private String address;      // Address
+    private String dob;
+    private String gender;
+    private String phone;
+    private String address;
 
-    @OneToOne(cascade = CascadeType.ALL) // Cascade to automatically persist the wishlist
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "wishlist_id", referencedColumnName = "id")
     private Wishlist wishlist;
 
-    // Updated field: Now references SharedWishlist
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL) // Owner of shared wishlists
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<SharedWishlist> sharedWishlists = new HashSet<>();
 
-    // New field to represent the shared wishlists this user is a member of
-    @ManyToMany(mappedBy = "members") // Members of shared wishlists
+    @ManyToMany(mappedBy = "members")
     private Set<SharedWishlist> memberWishlists = new HashSet<>();
 
     @Override

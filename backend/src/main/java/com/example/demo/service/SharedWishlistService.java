@@ -9,9 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class SharedWishlistService {
@@ -27,6 +25,24 @@ public class SharedWishlistService {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    public ResponseEntity<List<OurUsers>> getAllMembersForSharedWishlist(Long id) {
+        Optional<SharedWishlist> sharedWishlist = sharedWishlistRepository.findById(id);
+        if (sharedWishlist.isPresent()) {
+            List<OurUsers> members = new ArrayList<>(sharedWishlist.get().getMembers());
+            System.out.println("Shared wishlist found with ID: " + id);
+            System.out.println("Number of members in the wishlist: " + members.size());
+            for (OurUsers member : members) {
+                System.out.println("Member ID: " + member.getId() + ", Email: " + member.getEmail());
+            }
+            return new ResponseEntity<>(members, HttpStatus.OK);
+        } else {
+            System.out.println("Shared wishlist not found for ID: " + id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+
     public ResponseEntity<SharedWishlist> saveSharedWishlist(SharedWishlistDTO sharedWishlistDTO) {
         OurUsers owner = usersManagementService.getUsersById(sharedWishlistDTO.getOwnerId()).getOurUsers();  // Get owner object
         if (owner == null) {
@@ -40,6 +56,11 @@ public class SharedWishlistService {
 
         // Initialize members list if necessary
         sharedWishlist.setMembers(new HashSet<>());  // Initialize members list
+
+        // Add the owner as a member
+        sharedWishlist.addMember(owner);
+
+        // Add other members
         for (Long memberId : sharedWishlistDTO.getMemberIds()) {
             OurUsers member = usersManagementService.getUsersById(memberId).getOurUsers();  // Get user object
             if (member != null) {
@@ -50,6 +71,7 @@ public class SharedWishlistService {
         SharedWishlist savedSharedWishlist = sharedWishlistRepository.save(sharedWishlist);
         return new ResponseEntity<>(savedSharedWishlist, HttpStatus.CREATED);
     }
+
 
     public ResponseEntity<Void> deleteSharedWishlist(Long id) {
         Optional<SharedWishlist> sharedWishlistOptional = sharedWishlistRepository.findById(id);
@@ -87,13 +109,23 @@ public class SharedWishlistService {
     }
 
     public ResponseEntity<List<SharedWishlist>> getAllSharedWishlistsForUser(Long userId) {
-        OurUsers user = usersManagementService.getUsersById(userId).getOurUsers();  // Get the user object
+        OurUsers user = usersManagementService.getUsersById(userId).getOurUsers();
         if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);  // Handle case if user not found
+            System.out.println("User not found for ID: " + userId);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<SharedWishlist> sharedWishlists = sharedWishlistRepository.findByMembersContaining(user);
+        System.out.println("User found: " + user.getUsername());
+
+        List<SharedWishlist> sharedWishlists = sharedWishlistRepository.findSharedWishlistsByUser(user);
+        System.out.println("Shared wishlists found: " + sharedWishlists.size());
+
+        for (SharedWishlist wishlist : sharedWishlists) {
+            System.out.println("Wishlist ID: " + wishlist.getId() + ", Name: " + wishlist.getSharedWishlistName());
+        }
+
         return new ResponseEntity<>(sharedWishlists, HttpStatus.OK);
     }
+
 
     public ResponseEntity<Void> addItemToSharedWishlist(Long id, Long itemId) {
         Optional<SharedWishlist> sharedWishlistOptional = sharedWishlistRepository.findById(id);

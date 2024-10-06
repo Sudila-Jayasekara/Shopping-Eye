@@ -6,9 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -26,12 +27,10 @@ public class SharedWishlist {
     @Column(name = "item_id")
     private Set<Long> itemIds = new HashSet<>();
 
-    // Owner of the shared wishlist
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private OurUsers owner;
 
-    // Members who can access the shared wishlist
     @ManyToMany
     @JoinTable(
             name = "shared_wishlist_members",
@@ -40,7 +39,6 @@ public class SharedWishlist {
     )
     private Set<OurUsers> members = new HashSet<>();
 
-    // Methods to manage item IDs
     public void addItem(Long itemId) {
         itemIds.add(itemId);
     }
@@ -49,12 +47,16 @@ public class SharedWishlist {
         itemIds.remove(itemId);
     }
 
-    // Methods to manage members
     public void addMember(OurUsers user) {
         members.add(user);
     }
 
     public void removeMember(OurUsers user) {
         members.remove(user);
+    }
+
+    @JsonIgnore
+    public List<OurUsers> getMembersList() {
+        return new ArrayList<>(members);
     }
 }

@@ -98,6 +98,18 @@ class UserService{
         }
     }
 
+    static async getUserByEmail(email, token) {
+        try {
+            const response = await axios.get(`${UserService.BASE_URL}/admin/get-user-by-email/${email}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            return response.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+    
+
     /**AUTHENTICATION CHECKER */
     static logout(){
         localStorage.removeItem('token')

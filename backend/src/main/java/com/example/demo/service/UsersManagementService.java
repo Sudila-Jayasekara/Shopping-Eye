@@ -206,6 +206,19 @@ public class UsersManagementService {
         }
         return reqRes;
     }
+    public ReqRes getUserByEmail(String email) {
+        ReqRes reqRes = new ReqRes();
+        try {
+            OurUsers userByEmail = usersRepo.findByEmail(email).orElseThrow(() -> new RuntimeException("User Not found"));
+            reqRes.setOurUsers(userByEmail);
+            reqRes.setStatusCode(200);
+            reqRes.setMessage("User with email '" + email + "' found successfully");
+        } catch (Exception e) {
+            reqRes.setStatusCode(500);
+            reqRes.setMessage("Error occurred: " + e.getMessage());
+        }
+        return reqRes;
+    }
 
 
     public ReqRes deleteUser(Long userId) {

@@ -1,14 +1,15 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.SharedWishlistDTO; // Import the SharedWishlistDTO
+import com.example.demo.entity.OurUsers;
 import com.example.demo.entity.SharedWishlist; // Import the SharedWishlist entity
 import com.example.demo.service.SharedWishlistService; // Import the SharedWishlist service
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/adminuser/shared-wishlist")
 public class SharedWishlistController {
@@ -18,6 +19,11 @@ public class SharedWishlistController {
     @PostMapping("/create")
     public ResponseEntity<SharedWishlist> createSharedWishlist(@RequestBody SharedWishlistDTO sharedWishlistDTO) {
         return sharedWishlistService.saveSharedWishlist(sharedWishlistDTO);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteSharedWishlist(@PathVariable Long id) {
+        return sharedWishlistService.deleteSharedWishlist(id);
     }
 
     @PutMapping("/{id}/add-item/{itemId}")
@@ -35,6 +41,11 @@ public class SharedWishlistController {
         return sharedWishlistService.getSharedWishlistById(id);
     }
 
+    @GetMapping("/{id}/members")
+    public ResponseEntity<List<OurUsers>> getAllMembersForSharedWishlist(@PathVariable Long id) {
+        return sharedWishlistService.getAllMembersForSharedWishlist(id);
+    }
+
     @PostMapping("/{id}/add-member/{userId}")
     public ResponseEntity<Void> addMemberToSharedWishlist(@PathVariable Long id, @PathVariable Long userId) {
         return sharedWishlistService.addMemberToSharedWishlist(id, userId);
@@ -50,9 +61,6 @@ public class SharedWishlistController {
         return sharedWishlistService.getAllSharedWishlistsForUser(userId);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteSharedWishlist(@PathVariable Long id) {
-        return sharedWishlistService.deleteSharedWishlist(id);
-    }
+
 }
 
