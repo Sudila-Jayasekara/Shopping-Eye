@@ -8,8 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-
+import java.util.Set;
 @Entity
 @Table(name = "ourusers")
 @Data
@@ -20,12 +21,23 @@ public class OurUsers implements UserDetails {
     private String email;
     private String name;
     private String password;
-    private String city;
     private String role;
+    private String imageUrl;
 
-    @OneToOne(cascade = CascadeType.ALL) // Cascade to automatically persist the wishlist
+    private String dob;
+    private String gender;
+    private String phone;
+    private String address;
+
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "wishlist_id", referencedColumnName = "id")
     private Wishlist wishlist;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Set<SharedWishlist> sharedWishlists = new HashSet<>();
+
+    @ManyToMany(mappedBy = "members")
+    private Set<SharedWishlist> memberWishlists = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

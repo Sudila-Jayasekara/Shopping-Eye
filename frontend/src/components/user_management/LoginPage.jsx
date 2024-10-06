@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+
+
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import UserService from "./UsersService";
 
@@ -6,23 +8,44 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log("Token retrieved from localStorage:", token);
+    if (token) {
+      setIsLoggedIn(true);
+      // Navigate to profile if already logged in
+      navigate("/profile");
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Attempting to log in with:", { email }); // Log the email
 
     try {
       const userData = await UserService.login(email, password);
-      console.log(userData);
+      console.log("Login response received:", userData);
+
       if (userData.token) {
         localStorage.setItem("token", userData.token);
         localStorage.setItem("role", userData.role);
+        console.log("Token stored in localStorage:", userData.token);
+        console.log("Role stored in localStorage:", userData.role);
+        
+        // Set isLoggedIn state
+        setIsLoggedIn(true);
+
+        // Navigate to profile page
         navigate("/profile");
       } else {
+        console.log("Login failed:", userData.message);
         setError(userData.message);
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error during login:", error);
       setError(error.message);
       setTimeout(() => {
         setError("");
@@ -36,9 +59,7 @@ function LoginPage() {
         <h2 className="text-3xl font-bold text-center text-blue-600 mb-8">
           Login
         </h2>
-        {error && (
-          <p className="text-red-500 text-center mb-4">{error}</p>
-        )}
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">

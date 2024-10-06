@@ -1,4 +1,9 @@
-import React from 'react';
+import WarrentyClame from './componenets/WarrentyClam/WarrentyClame';
+import InventryDetails from './componenets/WarrentyClam/InventryDetails';
+import WarrentyClamForm from './componenets/WarrentyClam/WarrentyClamForm';
+import UpdateWarrentyClaim from './componenets/WarrentyClam/UpdateWarrentyClaim';
+import ManageWarrentyClaims from './componenets/WarrentyClam/ManageWarrentyClaims';
+
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from './components/user_management/LoginPage';
 import RegistrationPage from './components/user_management/RegistrationPage';
@@ -10,46 +15,77 @@ import PaymentForm from './components/order_process_management/PaymentForm';
 import AdminPaymentView from './components/order_process_management/AdminPaymentView';
 import ItemForm from './components/inventory_management/itemForm';
 import Inventory from './components/inventory_management/Inventory';
-import HomeShopping from './components/inventory_management/HomeSopping';
+import HomeShopping from './components/inventory_management/HomeShopping';
+import ItemDetails from './components/inventory_management/ItemDetails';
+import ShoppingCart from "./components/order_process_management/ShoppingCart";
+import { QuantityProvider } from './components/inventory_management/QuantityContext';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import Header from './Header';
-import Footer from './footer';
+import Footer from './Footer';
+import Sidebar from './SideBar';
+import Wishlist from './components/wishlist_management/Wishlist';
+import Logout from './components/user_management/Logout';
+import AddToWishlist from './components/wishlist_management/AddToWishlist';
+import RemoveFromWishlist from './components/wishlist_management/RemoveFromWishlist';
+import WarrantyManagement from './components/order_process_management/WarrantyManagement';
 
 function App() {
-  // Check if user is authenticated and admin
   const isAuthenticated = UserService.isAuthenticated();
   const isAdmin = UserService.isAdmin();
 
   return (
     <Router>
-      <div className="App flex flex-col min-h-screen">
-        <Header />
+      <div className="App flex min-h-screen">
+        <Sidebar />
+        <div className="flex-1 flex flex-col ml-64"> {/* Add margin left to accommodate the sidebar */}
+          <Header />
+          <QuantityProvider>
+            <div className="flex-grow">
+              <Routes>
+                <Route path="/" element={<HomeShopping />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/profile" element={<ProfilePage />} />
 
-        <div className="flex-grow">
-          <Routes>
-            <Route path="/" element={<HomeShopping />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/profile" element={isAuthenticated ? <ProfilePage /> : <Navigate to="/login" />} />
-            
-            {/* Render admin-only routes if user is authenticated and is admin */}
-            {isAuthenticated && isAdmin && (
-              <>
-                <Route path="/register" element={<RegistrationPage />} />
-                <Route path="/update-user/:userId" element={<UpdateUser />} />
-                <Route path="/admin/user-management" element={<UserManagementPage />} />
+                {isAuthenticated && isAdmin && (
+                  <>
+                    <Route path="/register" element={<RegistrationPage />} />
+                    <Route path="/update-user/:userId" element={<UpdateUser />} />
+                    <Route path="/admin/user-management" element={<UserManagementPage />} />
+                    <Route path="/admin/payments" element={<AdminPaymentView />} />
+                  </>
+                )}
+
+                <Route path='/wishlist' element={<Wishlist />} />
+                <Route path='/addtowishlist/:id' element={<AddToWishlist />} />
+                <Route path='/removefromwishlist/:id' element={<RemoveFromWishlist />} />
+                <Route path="/payment" element={<PaymentForm />} />
+                <Route path="/create-item" element={<ItemForm />} />
+                <Route path="/inventory" element={<Inventory />} />
+                <Route path="/home" element={<HomeShopping />} />
+                <Route path="/item/:id" element={<ItemDetails />} />
+
+                <Route path="/payment" element={<PaymentForm />} />
                 <Route path="/admin/payments" element={<AdminPaymentView />} />
-              </>
-            )}
-            
-            <Route path="/payment" element={<PaymentForm />} />
-            <Route path="/create-item" element={<ItemForm />} />
-            <Route path="/inventory" element={<Inventory />} />
-            
-            {/* Redirect all other routes to login */}
-            <Route path="*" element={<Navigate to="/login" />} />
-          </Routes>
-        </div>
+                <Route path="/cart" element={<ShoppingCart />} />
 
-        <Footer />
+
+                <Route path="/" element={<Navigate to="/inventry" />} />
+                <Route path="/inventry" element={<InventryDetails />} />
+                <Route path="/warrenty/:id" element={<WarrentyClame />} />
+
+                <Route path="/warranty" element={<WarrantyManagement />} />
+                <Route path="/warranty-form/:id" element={<WarrentyClamForm />} />
+                <Route path="/warranty-items/:id" element={<UpdateWarrentyClaim />} />
+                <Route path="/warranty-claim" element={<ManageWarrentyClaims />} />
+
+
+                <Route path="*" element={<Navigate to="/login" />} />
+              </Routes>
+            </div>
+          </QuantityProvider>
+          <Footer />
+        </div>
       </div>
     </Router>
   );

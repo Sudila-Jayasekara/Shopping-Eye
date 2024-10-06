@@ -1,6 +1,8 @@
+// src/RegistrationPage.js
 import React, { useState } from 'react';
 import UserService from './UsersService';
 import { useNavigate } from 'react-router-dom';
+import { uploadImage } from '../inventory_management/InventoryService'; // Ensure the correct path
 
 function RegistrationPage() {
     const navigate = useNavigate();
@@ -10,26 +12,73 @@ function RegistrationPage() {
         email: '',
         password: '',
         role: '',
-        city: ''
+        dob: '',          // New field for Date of Birth
+        gender: '',       // New field for Gender
+        phone: '',        // New field for Phone Number
+        address: '',      // New field for Address
+        imageUrl: ''      // Add imageUrl to formData
     });
 
+    const [selectedFile, setSelectedFile] = useState(null); // State for the selected file
+
+    // Validation and Input Change Handler
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+
+        // For phone number validation
+        if (name === "phone") {
+            const numericValue = value.replace(/\D/g, ''); // Replace any non-digit character with an empty string
+            if (numericValue.length <= 10) {
+                setFormData({ ...formData, [name]: numericValue });
+            }
+        } 
+        // For name validation (no numbers allowed)
+        else if (name === "name") {
+            const alphabeticValue = value.replace(/[^a-zA-Z\s]/g, ''); // Only allow letters and spaces
+            setFormData({ ...formData, [name]: alphabeticValue });
+        } 
+        // For other fields
+        else {
+            setFormData({ ...formData, [name]: value });
+        }
+    };
+
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0]); // Update selectedFile state
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            await UserService.register(formData, token);
+            let imageUrl = ''; // Initialize imageUrl
 
+            if (selectedFile) {
+                imageUrl = await uploadImage(selectedFile); // Upload image and get the URL
+            }
+
+            // Create a new object that includes the imageUrl
+            const dataToSend = {
+                ...formData,
+                imageUrl: imageUrl // Use the URL obtained from the upload
+            };
+
+            // Log the formData before sending to the backend
+            console.log('Form Data to be sent:', dataToSend);
+
+            const token = localStorage.getItem('token');
+            await UserService.register(dataToSend, token); // Send the complete formData including imageUrl
+
+            // Reset the form
             setFormData({
                 name: '',
                 email: '',
                 password: '',
                 role: '',
-                city: ''
+                dob: '',
+                gender: '',
+                phone: '',
+                address: '',
+                imageUrl: ''
             });
             alert('User registered successfully');
             navigate('/admin/user-management');
@@ -41,9 +90,10 @@ function RegistrationPage() {
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col justify-center items-center">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl">
                 <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">Registration</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
+                    {/* Left Column */}
                     <div className="form-group">
                         <label className="block text-gray-700 font-semibold">Name:</label>
                         <input
@@ -67,6 +117,28 @@ function RegistrationPage() {
                         />
                     </div>
                     <div className="form-group">
+                        <label className="block text-gray-700 font-semibold">DOB:</label>
+                        <input
+                            type="date"
+                            name="dob"
+                            value={formData.dob}
+                            onChange={handleInputChange}
+                            required
+                            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label className="block text-gray-700 font-semibold">Profile Image:</label>
+                        <input
+                            type="file"
+                            onChange={handleFileChange} // Handle file selection
+                            accept="image/*" // Accept only image files
+                            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                        />
+                    </div>
+
+                    {/* Right Column */}
+                    <div className="form-group">
                         <label className="block text-gray-700 font-semibold">Password:</label>
                         <input
                             type="password"
@@ -79,33 +151,68 @@ function RegistrationPage() {
                     </div>
                     <div className="form-group">
                         <label className="block text-gray-700 font-semibold">Role:</label>
-                        <input 
-                            type="text" 
+                        <select 
                             name="role" 
                             value={formData.role} 
                             onChange={handleInputChange} 
-                            placeholder="Enter your role" 
+                            required
                             className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                            required />
+                        >
+                            <option value="">Select your role</option>
+                            <option value="USER">User</option>
+                            <option value="ADMIN">Admin</option>
+                            <option value="SELLER">Seller</option>
+                            <option value="CUSTOMER">Customer</option>
+                            <option value="SHOP_OWNER">Shop Owner</option>
+                        </select>
                     </div>
                     <div className="form-group">
-                        <label className="block text-gray-700 font-semibold">City:</label>
+                        <label className="block text-gray-700 font-semibold">Phone Number:</label>
                         <input
-                            type="text"
-                            name="city"
-                            value={formData.city}
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
                             onChange={handleInputChange}
-                            placeholder="Enter your city"
                             required
                             className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
                         />
                     </div>
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600"
-                    >
-                        Register
-                    </button>
+                    <div className="form-group">
+                        <label className="block text-gray-700 font-semibold">Gender:</label>
+                        <select 
+                            name="gender" 
+                            value={formData.gender} 
+                            onChange={handleInputChange} 
+                            required
+                            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                        >
+                            <option value="">Select your gender</option>
+                            <option value="MALE">Male</option>
+                            <option value="FEMALE">Female</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label className="block text-gray-700 font-semibold">Address:</label>
+                        <input
+                            type="text"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleInputChange}
+                            required
+                            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                        />
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="col-span-2">
+                        <button
+                            type="submit"
+                            className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600"
+                        >
+                            Register
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

@@ -42,7 +42,13 @@ public class UserManagementController {
 
     }
 
-    @PutMapping("/admin/update/{userId}")
+    @GetMapping("/admin/get-user-by-email/{email}")
+    public ResponseEntity<ReqRes> getUserByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(usersManagementService.getUserByEmail(email));
+    }
+
+
+    @PutMapping("/adminuser/update/{userId}")
     public ResponseEntity<ReqRes> updateUser(@PathVariable Long userId, @RequestBody OurUsers reqres){
         return ResponseEntity.ok(usersManagementService.updateUser(userId, reqres));
     }
@@ -59,6 +65,15 @@ public class UserManagementController {
     public ResponseEntity<ReqRes> deleteUSer(@PathVariable Long userId){
         return ResponseEntity.ok(usersManagementService.deleteUser(userId));
     }
+
+    @GetMapping("/adminuser/get-user-by-token")
+    public ResponseEntity<ReqRes> getUserByToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName(); // Extract the email from the authentication
+        ReqRes response = usersManagementService.getUsersByEmail(email); // Call a new method in the service
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
 
 
 }

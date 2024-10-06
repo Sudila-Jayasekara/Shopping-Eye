@@ -21,21 +21,21 @@ public class Wishlist {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<WishlistItem> items = new HashSet<>();
+    @ElementCollection
+    @CollectionTable(name = "wishlist_items", joinColumns = @JoinColumn(name = "wishlist_id"))
+    @Column(name = "item_id")
+    private Set<Long> itemIds = new HashSet<>();
 
     @OneToOne(mappedBy = "wishlist")
     @JsonIgnore
     private OurUsers user;
 
-    // Methods to manage the relationship
-    public void addItem(WishlistItem item) {
-        items.add(item);
-        item.setWishlist(this);
+    // Methods to manage item IDs
+    public void addItem(Long itemId) {
+        itemIds.add(itemId);
     }
 
-    public void removeItem(WishlistItem item) {
-        items.remove(item);
-        item.setWishlist(null);
+    public void removeItem(Long itemId) {
+        itemIds.remove(itemId);
     }
 }

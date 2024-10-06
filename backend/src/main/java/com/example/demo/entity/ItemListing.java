@@ -24,16 +24,24 @@ public class ItemListing implements Serializable {
 
     private String category;
 
+    @Column(name = "image_url")
+    private String imageUrl; // New field for image URL
+
+    @Column(name = "warranty_time")
+    private Integer warrantyTime; // New field for warranty time in months
+
     // Default constructor
     public ItemListing() {}
 
     // Parameterized constructor
-    public ItemListing(String name, Double price, Integer quantity, String description, String category) {
+    public ItemListing(String name, Double price, Integer quantity, String description, String category, String imageUrl, Integer warrantyTime) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
         this.description = description;
         this.category = category;
+        this.imageUrl = imageUrl;
+        this.warrantyTime = warrantyTime;
     }
 
     // Getters and Setters
@@ -83,5 +91,21 @@ public class ItemListing implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Integer getWarrantyTime() {
+        return warrantyTime;
+    }
+
+    public void setWarrantyTime(Integer warrantyTime) {
+        this.warrantyTime = warrantyTime;
     }
 }
