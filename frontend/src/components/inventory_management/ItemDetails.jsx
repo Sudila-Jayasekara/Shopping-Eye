@@ -136,26 +136,90 @@ const ItemDetails = () => {
     }
   };
 
-  const addToCart = (item) => {
+  // const addToCart = (item) => {
+  //   const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+  //   const existingItem = cartItems.find(cartItem => cartItem.id === item.id);
+
+  //   if (existingItem) {
+  //     existingItem.quantity = Math.min(existingItem.quantity + currentQuantity, item.stock);
+  //   } else {
+  //     cartItems.push({ ...item, quantity: currentQuantity });
+  //   }
+
+  //   localStorage.setItem('cart', JSON.stringify(cartItems));
+  //   // Show success message
+  //   setShowSuccessMessage(true);
+  //   // Hide message after 3 seconds
+  //   setTimeout(() => {
+  //     setShowSuccessMessage(false);
+  //   }, 3000);
+  //   updateQuantity(id, 0);  // Reset quantity after adding to cart
+  // };
+
+  const addToCart = async (item) => {
     const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
     const existingItem = cartItems.find(cartItem => cartItem.id === item.id);
-
+  
+    // Update quantity or add a new item to the cart
     if (existingItem) {
       existingItem.quantity = Math.min(existingItem.quantity + currentQuantity, item.stock);
     } else {
       cartItems.push({ ...item, quantity: currentQuantity });
     }
-
+  
+    // Update local storage
     localStorage.setItem('cart', JSON.stringify(cartItems));
+    
     // Show success message
     setShowSuccessMessage(true);
     // Hide message after 3 seconds
     setTimeout(() => {
       setShowSuccessMessage(false);
     }, 3000);
-    updateQuantity(id, 0);  // Reset quantity after adding to cart
+  
+    // Reset quantity after adding to cart
+    updateQuantity(item.id, 0); 
+  
+    // Prepare warranty item data
+    const purchaseDay = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+    const warrantyItem = {
+      itemId: item.id,
+      purchaseDay: purchaseDay,
+      name: item.name,
+      price: item.price,
+      description: item.description || "No description available",
+      category: item.category,
+      warrantyTime: item.warrantyTime || 12, // Default warranty time if not provided
+    };
+  
+    // Send POST request to backend
+    try {
+      const response = await fetch('http://localhost:1010/public/warranty-items', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Include Authorization header if necessary
+          // 'Authorization': `Bearer ${yourToken}`, // Uncomment if needed
+        },
+        body: JSON.stringify(warrantyItem),
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response from server:', errorText);
+        throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
+      }
+  
+      const data = await response.json();
+      console.log('Warranty item saved:', data);
+      // Additional success handling can be added here
+  
+    } catch (error) {
+      console.error('Fetch error:', error.message);
+      alert('An error occurred while processing your warranty item. Please try again.');
+    }
   };
-
+  
   const handleBuy = () => {
     const totalPrice = item.price * currentQuantity; // Calculate the total price based on item price and selected quantity
 

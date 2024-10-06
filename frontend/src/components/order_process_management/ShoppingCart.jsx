@@ -39,7 +39,6 @@ const ShoppingCart = () => {
     calculateTotal(updatedCartItems);
   };
 
-  // No need to remove items when navigating to checkout
   const handleCheckout = () => {
     sessionStorage.setItem('totalPrice', totalPrice);
     navigate('/payment');  // Navigate to the checkout page
