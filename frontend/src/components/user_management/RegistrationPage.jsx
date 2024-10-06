@@ -21,9 +21,26 @@ function RegistrationPage() {
 
     const [selectedFile, setSelectedFile] = useState(null); // State for the selected file
 
+    // Validation and Input Change Handler
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+
+        // For phone number validation
+        if (name === "phone") {
+            const numericValue = value.replace(/\D/g, ''); // Replace any non-digit character with an empty string
+            if (numericValue.length <= 10) {
+                setFormData({ ...formData, [name]: numericValue });
+            }
+        } 
+        // For name validation (no numbers allowed)
+        else if (name === "name") {
+            const alphabeticValue = value.replace(/[^a-zA-Z\s]/g, ''); // Only allow letters and spaces
+            setFormData({ ...formData, [name]: alphabeticValue });
+        } 
+        // For other fields
+        else {
+            setFormData({ ...formData, [name]: value });
+        }
     };
 
     const handleFileChange = (e) => {

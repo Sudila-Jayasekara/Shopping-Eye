@@ -26,34 +26,62 @@ function UpdateUser() {
     }, [userId]);
 
     const fetchUserDataById = async (userId) => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await UserService.getUserById(userId, token);
-        // Extracting user data from the response
-        const user = response.ourUsers; 
-    
-        if (user) {
-          // Destructure fields from the 'ourUsers' object
-          const { name, email, role, dob, gender, phone, address, imageUrl } = user;
-          
-          // Update state with user data
-          setUserData({ name, email, role, dob, gender, phone, address, imageUrl });
-        } else {
-          console.error('User data not found.');
+        try {
+            const token = localStorage.getItem('token');
+            const response = await UserService.getUserById(userId, token);
+            // Extracting user data from the response
+            const user = response.ourUsers;
+
+            if (user) {
+                // Destructure fields from the 'ourUsers' object
+                const { name, email, role, dob, gender, phone, address, imageUrl } = user;
+
+                // Update state with user data
+                setUserData({ name, email, role, dob, gender, phone, address, imageUrl });
+            } else {
+                console.error('User data not found.');
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
         }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
     };
-    
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setUserData((prevUserData) => ({
-            ...prevUserData,
-            [name]: value
-        }));
+    
+        // For phone number validation
+        if (name === "phone") {
+            // Allow only numbers and restrict to 10 digits
+            const numericValue = value.replace(/\D/g, ''); // Replace any non-digit character with an empty string
+            if (numericValue.length > 10) {
+                return; // Prevent entering more than 10 digits
+            }
+            setUserData((prevUserData) => ({
+                ...prevUserData,
+                [name]: numericValue
+            }));
+        } 
+        // For name validation (no numbers allowed)
+        else if (name === "name") {
+            // Allow only letters and spaces
+            const alphabeticValue = value.replace(/[^a-zA-Z\s]/g, ''); // Replace any non-letter character with an empty string
+            setUserData((prevUserData) => ({
+                ...prevUserData,
+                [name]: alphabeticValue
+            }));
+        } 
+        // For other fields
+        else {
+            setUserData((prevUserData) => ({
+                ...prevUserData,
+                [name]: value
+            }));
+        }
     };
+    
+    
+
 
     const handleFileChange = (e) => {
         setSelectedFile(e.target.files[0]); // Update selectedFile state
@@ -86,6 +114,7 @@ function UpdateUser() {
             alert(error);
         }
     };
+
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col justify-center items-center">
@@ -165,6 +194,7 @@ function UpdateUser() {
                             className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
                         />
                     </div>
+
                     <div className="form-group">
                         <label className="block text-gray-700 font-semibold">Gender:</label>
                         <select
