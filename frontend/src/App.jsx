@@ -76,7 +76,7 @@ function App() {
 
                 <Route path="/warranty" element={<WarrantyManagement />} />
                 <Route path="/warranty-form/:id" element={<WarrentyClamForm />} />
-                <Route path="/warranty-claim-form/:id" element={<UpdateWarrentyClaim />} />
+                <Route path="/warranty-items/:id" element={<UpdateWarrentyClaim />} />
                 <Route path="/warranty-claim" element={<ManageWarrentyClaims />} />
 
 

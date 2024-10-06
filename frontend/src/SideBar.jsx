@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faChartLine, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faChartLine, faCog, faSignOutAlt,faClipboardCheck,faFileAlt } from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = () => {
     return (
@@ -29,6 +29,18 @@ const Sidebar = () => {
                             payments
                         </Link>
                     </li>
+                    <li>
+    <Link to="/warranty" className="flex items-center p-2 hover:bg-gray-700 rounded transition duration-200">
+        <FontAwesomeIcon icon={faClipboardCheck} className="mr-2" />
+        Warranty Management
+    </Link>
+    <Link to="/warranty-claim" className="flex items-center p-2 hover:bg-gray-700 rounded transition duration-200">
+    <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
+    Warranty Claim
+</Link>
+
+</li>
+
                 </ul>
                 {/* Logout Button at the Bottom */}
                 <div className="mt-4">

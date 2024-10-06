@@ -13,7 +13,7 @@ const WarrantyManagement = () => {
 
   const handleWarrantyClaim = (itemId) => {
     // Navigate to the warranty form using the new path
-    navigate(`/warranty-form/${itemId}`);
+    navigate(`/warrenty/${itemId}`);
   };
 
   return (
