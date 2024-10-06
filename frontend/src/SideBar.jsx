@@ -18,13 +18,13 @@ const Sidebar = () => {
                         </Link>
                     </li>
                     <li>
-                        <Link to="/analytics" className="flex items-center p-2 hover:bg-gray-700 rounded transition duration-200">
+                        <Link to="/admin/user-management" className="flex items-center p-2 hover:bg-gray-700 rounded transition duration-200">
                             <FontAwesomeIcon icon={faChartLine} className="mr-2" />
-                            Analytics
+                            Manage Users
                         </Link>
                     </li>
                     <li>
-                        <Link to="/settings" className="flex items-center p-2 hover:bg-gray-700 rounded transition duration-200">
+                        <Link to="/wishlist" className="flex items-center p-2 hover:bg-gray-700 rounded transition duration-200">
                             <FontAwesomeIcon icon={faCog} className="mr-2" />
                             Settings
                         </Link>

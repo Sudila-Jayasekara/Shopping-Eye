@@ -27,7 +27,7 @@ const AddToWishlist = () => {
                 await addItemToWishlist(userId, id);
 
                 
-                navigate(-1);
+                navigate('/wishlist');
             } catch (err) {
                 setError(err.message);
             } finally {
