@@ -7,7 +7,7 @@ function WarrantyClaimForm() {
   const navigate = useNavigate(); // Initialize navigate for redirection
   const [inventory, setInventory] = useState({});
   const [formData, setFormData] = useState({
-    itemDescription: '',
+    itemName: '',
     purchaseDay: '',
     createdDate: new Date().toISOString().split('T')[0],
     issue: '',
@@ -22,7 +22,7 @@ function WarrantyClaimForm() {
         setInventory(data);
         setFormData(prevData => ({
           ...prevData,
-          itemDescription: data.itemDescription,
+          itemName: data.itemName,
           purchaseDay: data.purchaseDay
         }));
       })
@@ -79,8 +79,8 @@ function WarrantyClaimForm() {
           <label className="block text-gray-700">Item Name</label>
           <input
             type="text"
-            name="itemDescription"
-            value={formData.itemDescription}
+            name="itemName"
+            value={formData.itemName}
             onChange={handleChange}
             disabled
             className="w-full p-2 border border-gray-300 rounded"
