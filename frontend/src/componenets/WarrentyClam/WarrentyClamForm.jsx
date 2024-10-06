@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function WarrentyClamForm() {
+function WarrantyClaimForm() {
   const { id } = useParams();
+  const navigate = useNavigate(); // Initialize navigate for redirection
   const [inventory, setInventory] = useState({});
   const [formData, setFormData] = useState({
     itemDescription: '',
@@ -12,6 +13,7 @@ function WarrentyClamForm() {
     issue: '',
     solution: ''
   });
+  const [successMessage, setSuccessMessage] = useState(''); // To display success message
 
   useEffect(() => {
     axios.get(`http://localhost:8080/api/inventry/${id}`)
@@ -54,8 +56,10 @@ function WarrentyClamForm() {
         // Submit the warranty claim
         axios.post('http://localhost:8080/api/warranty-claims', formData)
           .then(response => {
-            console.log('Warranty claim submitted:', response.data);
-            // Redirect or show success message
+            setSuccessMessage('Warranty claim submitted successfully!'); // Set success message
+            setTimeout(() => {
+              navigate('/warranty-claim'); // Redirect to warranty claims page after a delay
+            }, 2000); // Wait for 2 seconds before redirecting
           })
           .catch(error => {
             console.error("There was an error submitting the warranty claim!", error);
@@ -69,6 +73,7 @@ function WarrentyClamForm() {
   return (
     <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-2xl font-bold mb-4">Warranty Claim Form</h2>
+      {successMessage && <div className="mb-4 text-green-500">{successMessage}</div>} {/* Success message */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-gray-700">Item Name</label>
@@ -110,6 +115,7 @@ function WarrentyClamForm() {
             value={formData.issue}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded"
+            required
           />
         </div>
         <div>
@@ -133,4 +139,4 @@ function WarrentyClamForm() {
   );
 }
 
-export default WarrentyClamForm;
+export default WarrantyClaimForm;
