@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import Header from '../HeaderFooter/Header';
-import Footer from '../HeaderFooter/Footer';
 
 function InventryDetails() {
   const [inventories, setInventories] = useState([]);
@@ -19,7 +17,6 @@ function InventryDetails() {
 
   return (
     <div>
-        <Header/>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
         
       {inventories.map((item) => (
@@ -36,7 +33,6 @@ function InventryDetails() {
       ))}
       
     </div>
-    <Footer/>
     </div>
   );
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
-function WarrentyClamForm() {
+function WarrantyClaimForm() {
   const { id } = useParams();
   const [inventory, setInventory] = useState({});
   const [formData, setFormData] = useState({
@@ -12,15 +12,17 @@ function WarrentyClamForm() {
     issue: '',
     solution: ''
   });
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
-    axios.get(`http://localhost:1010/public/inventry/${id}`)
+    axios.get(`http://localhost:1010/public/warranty-items/${id}`)
       .then(response => {
         const data = response.data;
+        console.log(data);
         setInventory(data);
         setFormData(prevData => ({
           ...prevData,
-          itemDescription: data.itemDescription,
+          itemDescription: data.name, // Ensure this matches the API response
           purchaseDay: data.purchaseDay
         }));
       })
@@ -28,7 +30,7 @@ function WarrentyClamForm() {
         console.error("There was an error fetching the inventory item!", error);
       });
   }, [id]);
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
@@ -46,36 +48,42 @@ function WarrentyClamForm() {
         const solution = response.data.solution;
 
         // Update formData with the predicted solution
-        setFormData(prevData => ({
-          ...prevData,
-          solution
-        }));
+        const updatedFormData = {
+          ...formData,
+          solution // include the predicted solution
+        };
 
         // Submit the warranty claim
-        axios.post('http://localhost:1010/public/warranty-claims', formData)
-          .then(response => {
-            console.log('Warranty claim submitted:', response.data);
-            // Redirect or show success message
-          })
-          .catch(error => {
-            console.error("There was an error submitting the warranty claim!", error);
-          });
+        return axios.post('http://localhost:1010/public/warranty-claims', updatedFormData);
+      })
+      .then(response => {
+        console.log('Warranty claim submitted:', response.data);
+        setMessage('Warranty claim submitted successfully!');
+        setFormData({
+          itemDescription: '',
+          purchaseDay: '',
+          createdDate: new Date().toISOString().split('T')[0],
+          issue: '',
+          solution: ''
+        });
       })
       .catch(error => {
-        console.error('Error fetching solution:', error);
+        console.error("There was an error submitting the warranty claim!", error);
+        setMessage('Error submitting warranty claim. Please try again.');
       });
   };
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-2xl font-bold mb-4">Warranty Claim Form</h2>
+      {message && <div className="mb-4 text-red-600">{message}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-gray-700">Item Name</label>
           <input
             type="text"
-            name="itemDescription"
-            value={formData.itemDescription}
+            name="itemDescription" // Change this to match the state
+            value={formData.itemDescription} // Correct the value reference here
             onChange={handleChange}
             disabled
             className="w-full p-2 border border-gray-300 rounded"
@@ -110,6 +118,7 @@ function WarrentyClamForm() {
             value={formData.issue}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded"
+            required // Make it required for user input
           />
         </div>
         <div>
@@ -133,4 +142,4 @@ function WarrentyClamForm() {
   );
 }
 
-export default WarrentyClamForm;
+export default WarrantyClaimForm;

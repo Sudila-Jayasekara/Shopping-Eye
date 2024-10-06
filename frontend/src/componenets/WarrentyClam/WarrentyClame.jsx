@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import Footer from '../HeaderFooter/Footer';
-import Header from '../HeaderFooter/Header';
+
 
 function WarrentyClame() {
   const { id } = useParams();
@@ -11,7 +10,7 @@ function WarrentyClame() {
   const [remainingTime, setRemainingTime] = useState({});
 
   useEffect(() => {
-    axios.get(`http://localhost:1010/public/inventry/${id}`)
+    axios.get(`http://localhost:1010/public/warranty-items/${id}`)
       .then(response => {
         const data = response.data;
         setInventory(data);

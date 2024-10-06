@@ -27,6 +27,7 @@ import Wishlist from './components/wishlist_management/Wishlist';
 import Logout from './components/user_management/Logout';
 import AddToWishlist from './components/wishlist_management/AddToWishlist';
 import RemoveFromWishlist from './components/wishlist_management/RemoveFromWishlist';
+import WarrantyManagement from './components/order_process_management/WarrantyManagement';
 
 function App() {
   const isAuthenticated = UserService.isAuthenticated();
@@ -73,6 +74,7 @@ function App() {
                 <Route path="/inventry" element={<InventryDetails />} />
                 <Route path="/warrenty/:id" element={<WarrentyClame />} />
 
+                <Route path="/warranty" element={<WarrantyManagement />} />
                 <Route path="/warranty-form/:id" element={<WarrentyClamForm />} />
                 <Route path="/warranty-claim-form/:id" element={<UpdateWarrentyClaim />} />
                 <Route path="/warranty-claim" element={<ManageWarrentyClaims />} />

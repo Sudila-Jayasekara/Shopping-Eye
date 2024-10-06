@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import Footer from '../HeaderFooter/Footer';
-import Header from '../HeaderFooter/Header';
 
 function UpdateWarrentyClaim() {
   const { id } = useParams();
@@ -53,7 +51,6 @@ function UpdateWarrentyClaim() {
 
   return (
     <div>
-        <Header/>
     <div className="p-6 max-w-lg mx-auto bg-white shadow-lg rounded-lg">
       <h2 className="text-2xl font-bold mb-4">Update Warranty Claim</h2>
       <form onSubmit={handleSubmit}>
@@ -125,7 +122,6 @@ function UpdateWarrentyClaim() {
         </button>
       </form>
     </div>
-    <Footer/>
     </div>
   );
 }

@@ -3,10 +3,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import Footer from '../HeaderFooter/Footer';
-import Header from '../HeaderFooter/Header';
 
-function ManageWarrentyClaims() {
+function ManageWarrantyClaims() {
   const [warrantyClaims, setWarrantyClaims] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,7 +15,7 @@ function ManageWarrentyClaims() {
 
   const fetchWarrantyClaims = async () => {
     try {
-      const response = await axios.get('http://localhost:1010/public/warranty-claims');
+      const response = await axios.get('http://localhost:1010/public/warranty-items');
       setWarrantyClaims(response.data);
       setLoading(false);
     } catch (err) {
@@ -41,20 +39,24 @@ function ManageWarrentyClaims() {
 
     // Define table columns
     const columns = [
-      { header: 'Item Name', dataKey: 'itemName' },
+      { header: 'Item ID', dataKey: 'itemId' },
+      { header: 'Item Name', dataKey: 'name' },
       { header: 'Purchase Day', dataKey: 'purchaseDay' },
-      { header: 'Created Date', dataKey: 'createdDate' },
-      { header: 'Issue', dataKey: 'issue' },
-      { header: 'Solution', dataKey: 'solution' },
+      { header: 'Price', dataKey: 'price' },
+      { header: 'Description', dataKey: 'description' },
+      { header: 'Category', dataKey: 'category' },
+      { header: 'Warranty Time (months)', dataKey: 'warrantyTime' },
     ];
 
     // Map the warrantyClaims array to table data format
     const tableData = warrantyClaims.map(claim => ({
-      itemName: claim.itemName,
+      itemId: claim.itemId,
+      name: claim.name,
       purchaseDay: claim.purchaseDay,
-      createdDate: claim.createdDate,
-      issue: claim.issue,
-      solution: claim.solution,
+      price: claim.price,
+      description: claim.description || "No description available",
+      category: claim.category,
+      warrantyTime: claim.warrantyTime,
     }));
 
     // Generate the table
@@ -72,9 +74,7 @@ function ManageWarrentyClaims() {
   if (error) return <p>{error}</p>;
 
   return (
-    
     <div className="p-2">
-        <Header/>
       <h1 className="text-2xl font-bold mb-4">Manage Warranty Claims</h1>
       <div className="mb-4">
         <button
@@ -87,22 +87,26 @@ function ManageWarrentyClaims() {
       <table className="w-full border-collapse">
         <thead>
           <tr>
+            <th className="border p-2">Item ID</th>
             <th className="border p-2">Item Name</th>
             <th className="border p-2">Purchase Day</th>
-            <th className="border p-2">Created Date</th>
-            <th className="border p-2">Issue</th>
-            <th className="border p-2">Solution</th>
+            <th className="border p-2">Price</th>
+            <th className="border p-2">Description</th>
+            <th className="border p-2">Category</th>
+            <th className="border p-2">Warranty Time (months)</th>
             <th className="border p-2">Actions</th>
           </tr>
         </thead>
         <tbody>
           {warrantyClaims.map((claim) => (
             <tr key={claim.id}>
-              <td className="border p-2">{claim.itemName}</td>
+              <td className="border p-2">{claim.itemId}</td>
+              <td className="border p-2">{claim.name}</td>
               <td className="border p-2">{claim.purchaseDay}</td>
-              <td className="border p-2">{claim.createdDate}</td>
-              <td className="border p-2">{claim.issue}</td>
-              <td className="border p-2">{claim.solution}</td>
+              <td className="border p-2">{claim.price.toFixed(2)} USD</td>
+              <td className="border p-2">{claim.description || "No description available"}</td>
+              <td className="border p-2">{claim.category}</td>
+              <td className="border p-2">{claim.warrantyTime}</td>
               <td className="border p-2">
                 <Link to={`/warranty-claim-form/${claim.id}`}>
                   <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200">
@@ -120,10 +124,8 @@ function ManageWarrentyClaims() {
           ))}
         </tbody>
       </table>
-      <Footer/>
     </div>
-    
   );
 }
 
-export default ManageWarrentyClaims;
+export default ManageWarrantyClaims;
