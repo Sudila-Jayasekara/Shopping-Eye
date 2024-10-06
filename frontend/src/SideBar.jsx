@@ -24,9 +24,9 @@ const Sidebar = () => {
                         </Link>
                     </li>
                     <li>
-                        <Link to="/wishlist" className="flex items-center p-2 hover:bg-gray-700 rounded transition duration-200">
+                        <Link to="/admin/payments" className="flex items-center p-2 hover:bg-gray-700 rounded transition duration-200">
                             <FontAwesomeIcon icon={faCog} className="mr-2" />
-                            Settings
+                            payments
                         </Link>
                     </li>
                 </ul>
