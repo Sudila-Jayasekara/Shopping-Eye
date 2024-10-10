@@ -1,7 +1,7 @@
+import { faChartLine, faCog, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faChartLine, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = () => {
     return (
@@ -18,9 +18,9 @@ const Sidebar = () => {
                         </Link>
                     </li>
                     <li>
-                        <Link to="/analytics" className="flex items-center p-2 hover:bg-gray-700 rounded transition duration-200">
+                        <Link to="/warranty" className="flex items-center p-2 hover:bg-gray-700 rounded transition duration-200">
                             <FontAwesomeIcon icon={faChartLine} className="mr-2" />
-                            Analytics
+                            Warrenty Clam
                         </Link>
                     </li>
                     <li>

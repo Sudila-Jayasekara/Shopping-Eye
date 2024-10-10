@@ -1,6 +1,6 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 
 function WarrantyClaimForm() {
   const { id } = useParams();
@@ -46,15 +46,16 @@ function WarrantyClaimForm() {
     axios.post('http://localhost:1010/public/predict-solution', { issue: formData.issue })
       .then(response => {
         const solution = response.data.solution;
-
+        console.log(solution);
         // Update formData with the predicted solution
         const updatedFormData = {
           ...formData,
           solution // include the predicted solution
         };
 
+        console.log(updatedFormData);
         // Submit the warranty claim
-        return axios.post('http://localhost:1010/public/warranty-claims', updatedFormData);
+        axios.post('http://localhost:1010/public/warranty-claims', updatedFormData);
       })
       .then(response => {
         console.log('Warranty claim submitted:', response.data);

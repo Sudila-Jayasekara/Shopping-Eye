@@ -13,6 +13,7 @@ import java.util.Map;
 public class AIPredictionService {
 
     public String getSuggestedSolution(String issue) {
+        System.out.println("Hitted to predict solution 2");
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:5000/predict"; // Flask API URL
 
